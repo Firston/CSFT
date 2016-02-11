@@ -1,0 +1,209 @@
+
+.b_body{	
+	width:100%;
+	height: 100%;
+	padding:0 !important;
+    overflow: hidden;
+	margin: 0 !important; 
+    display:block;
+    text-decoration:none !important;
+    
+	background-color: #000000;
+}
+
+a { 
+    text-decoration: none; /* Отменяем подчеркивание у ссылки */
+} 
+/*
+.b_main_div{
+	width: 1200px;
+	margin: 0 auto;
+}
+*/
+ .b_main_div {
+  /*margin:0 auto;
+  width:1205px;
+  font-family: Arial;
+  font-size: 13px;
+  background:#f6f6f6;
+  overflow:hidden;*/
+  
+    background: none repeat scroll 0 0 #f6f6f6;
+    font-family: Arial;
+    font-size: 14px;
+    margin: 0 auto;
+    overflow: hidden;
+    width: 1205px;
+ }
+
+
+
+/*
+.b_header{
+	width: 100%;
+	height: 150px;
+	background-color: #836fff;
+	background-size: cover;
+	color: #000000;
+	margin-top: 0.5%;
+}*/
+
+ .b_header{
+  width:100%;
+  background: url("/CSFT/image/logotop.png");
+  height:137px;
+ }
+ 
+.b_content{
+  width: 100%;
+  height: 620px;
+  /*background-color: #836fff;*/
+}
+/*
+.b_footer{
+	border-top: 5px groove;
+	border-color: ghostwhite;
+	width: 100%;
+	height: 50px;
+	background-color: #836fff;
+	margin-top: auto;
+}*/
+
+.b_footer{
+  background: #33363f;
+  color:#fff;
+  width:100%;
+  height:38px;
+  margin-top:41px;
+  text-align:center;
+  padding-top:10px;
+ }
+ 
+/*
+.b_main_block_error{
+	position: absolute;
+	width: 40%;
+	height: 50%;
+	background: #000000;
+	margin: -30% 30% auto;
+}
+
+.b_main_block_error{
+  background:url("/CSFT/image/vhod.png") no-repeat;
+  width:774px;
+  height:324px;
+  margin:100px auto;
+  font-family: "Arial Unicode MS";
+  position:fixed;
+  left:50%; 
+  margin-left:-336px;
+  top:100px;
+ }
+*/ 
+  #b_blockError{
+  background:url("/CSFT/image/vhod.png") no-repeat;
+  width:774px;
+  height:324px;
+  font-family: "Arial Unicode MS";
+  position: absolute;
+  top: 200px;
+  left: 50%;
+  margin-left: -300px;
+ }
+ 
+ /*
+#idErrorCloce{
+  background:url("/CSFT/image/error.png") no-repeat;
+  width:29px;
+  height:26px;
+  border:none;
+  float:right;
+  margin:19px 10px;
+ }
+ */
+ #b_idErrorClose{
+  background:url("/CSFT/image/error.png") no-repeat;
+  width:29px;
+  height:26px;
+  border:none;
+  position:absolute;
+  right:12px;
+  top:19px;
+ }
+ 
+ 
+ .war1{
+  color:#ff0000;
+  font: Arial;
+  padding-left:60px;
+ }
+
+ .war2{
+  color:#0000FF;
+  font: Arial;
+  padding-left:60px;}
+
+ .war3{
+  color:#00AA00;
+  font: Arial;
+  padding-left:60px;
+ }
+  
+
+ .war_info{
+  padding-left:60px;
+ }
+/*
+.b_main_block_error_entry{
+	position: absolute;
+	width: 40%;
+	height: 50%;
+	margin: 5% 30% auto;
+}*/
+
+/*
+.b_main_block_error_entry{
+  background:url("/CSFT/image/vhod.png") no-repeat;
+  width:774px;
+  height:324px;
+  margin:100px auto;
+  font-family: "Arial Unicode MS";
+  font-size: 14pt;
+  position:fixed;
+  left:50%; 
+  margin-left:-336px;
+  top:100px;
+ }
+*/
+#b_error_divBlock{
+	width: 95%;
+	height: 304px;
+	overflow-y: auto;
+	margin-top: 25px;
+	padding-left: -10px;
+	/*padding-top: 60px;*/
+	overflow-y: auto; 
+		
+}
+.b_block_error{
+	position: relative;
+	width: 90%;
+	height: auto;
+	margin: 5% 5% auto;
+	font-size: 15px;
+	margin-left: 40px;
+}
+
+#main_info_body{
+	position: fixed;
+	width: 15%;
+	height: 656px;
+	background: #ffffff;
+	/* margin: -56.4% 100.5%; */
+	top: 134px;
+	right: 56px;
+}
+#info_body{
+	height: 95%;
+	overflow: auto;
+}

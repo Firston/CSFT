@@ -1,0 +1,654 @@
+ Версия 14.10.22
+ 
+ 1. Введено отображение версии системы
+ 2. Отредактирован метод getStatement() класса ConnectionManager 
+ 3. Добавление нового пункта меню "Тип элемента" для типа  уч. записи "Администратор"
+    
+    VIEW ДЛЯ БД : 
+    	CREATE VIEW `view_listtypes` AS  SELECT `listTypes`.`id` AS 'id:№ (w)', `listTypes`.`typeValue` AS 'typeValue:Тип (w)' FROM `listTypes`;
+    
+ 4. Удаление признака AUTO_INCREMENT из таблицы listTypes у поля id :
+   	ALTER TABLE  `listTypes` CHANGE  `id`  `id` INT( 11 ) NOT NULL;
+    	
+=====================================================================================    	
+    
+Версия 14.10.30    
+
+1. Создание таблицы "Приоритет для элемента"
+
+	CREATE TABLE  `terminal`.`listPriorities` (
+		`id` INT NOT NULL ,
+		`valuePriority` VARCHAR( 25 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+		PRIMARY KEY (  `id` )
+	) ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci;
+	
+2. Добавление столбца в таблицу typeObject 
+
+	ALTER TABLE  `typeObject` ADD  `id_listPrioritie` INT NOT NULL AFTER  `defaultValue`;
+	
+3. Переопределение представления view_typeobject	
+
+		DROP VIEW `view_typeobject`;
+
+		/*
+			не создал
+		*/
+		CREATE VIEW `view_typeobject` AS
+		SELECT `typeObject`.`id` AS `id:№ (i)`, `listTypes`.`typeValue` AS 'id_listType:Тип (l)', 
+			   `typeObject`.`code` AS 'code:Код (w)', `typeObject`.`label` AS 'label:Описание (w)',
+			   `typeObject`.`require` AS 'require:Обязательность (c)', `typeObject`.`message` AS 'message:Сообщение (w)', 
+			   `typeObject`.`defaultValue` AS 'defaultValue:Значение по умолчанию (w)',
+			   `listPriorities`.`valuePriority` AS 'id_listPrioritie:Приоритет поля (l)', 
+			   `typeObject`.`id_supplier` AS 'id_supplier:Поставщик',`id_supplier`
+		FROM `typeObject`
+		INNER JOIN `listTypes`
+		ON `typeObject`.`id_listType` = `listTypes`.`id`
+		INNER JOIN `listPriorities`
+		ON `typeObject`.`id_listPrioritie` = `listPriorities`.`id`;
+		
+4. Переопределение представления view_contentsubservices
+
+		DROP VIEW `view_contentsubservices`;
+		
+		CREATE  VIEW `view_contentsubservices` AS
+		SELECT `contentSubServices`.`id` AS `id:№ (i)`, `listTypes`.`typeValue` AS 'id_listType:Тип (l)', 
+	   		  `typeObject`.`code` AS 'code:Код (w)', `typeObject`.`label` AS 'label:Описание (w)',
+		   	  `typeObject`.`require` AS 'require:Обязательность (c)', `typeObject`.`message` AS 'message:Сообщение (w)', 
+		      `typeObject`.`defaultValue` AS 'defaultValue:Значение по умолчанию (w)', 
+		      `listPriorities`.`valuePriority` AS 'id_listPrioritie:Приоритет элемента (l)',
+		      `typeObject`.`id_supplier` AS 'id_supplier:Поставщик',
+		      `contentSubServices`.`id_subService` AS 'id_subService:Код подуслуги'
+	    FROM `contentSubServices`
+		INNER JOIN `subServices`
+		ON `contentSubServices`.`id_subService` = `subServices`.`id`
+		INNER JOIN `typeObject`
+		ON `contentSubServices`.`id_typeObject` = `typeObject`.`id`
+		INNER JOIN `listTypes`
+		ON `typeObject`.`id_listType` = `listTypes`.`id`
+		INNER JOIN `listPriorities`
+		ON `typeObject`.`id_listPrioritie` = `listPriorities`.`id`;
+		
+5. Доработка Java классов отрисовки нового функцйионала		
+===================================================================		
+
+14.10.31
+
+1.  Удален столбец id_listPrioritie из таблицы typeObject
+
+	DROP VIEW  `view_typeobject`;
+	
+	DROP VIEW  `view_contentsubservices`;
+	
+	ALTER TABLE  `typeObject` DROP  `id_listPrioritie`;
+	
+
+2.  Переопределение представления view_typeobject	
+
+		CREATE VIEW `view_typeobject` AS
+		SELECT `typeObject`.`id` AS `id:№ (i)`, `listTypes`.`typeValue` AS 'id_listType:Тип (l)', 
+			   `typeObject`.`code` AS 'code:Код (w)', `typeObject`.`label` AS 'label:Описание (w)',
+			   `typeObject`.`require` AS 'require:Обязательность (c)', `typeObject`.`message` AS 'message:Сообщение (w)', 
+			   `typeObject`.`defaultValue` AS 'defaultValue:Значение по умолчанию (w)', 
+			   `typeObject`.`id_supplier` AS 'id_supplier:Поставщик',`id_supplier`
+		FROM `typeObject`
+		INNER JOIN `listTypes`
+		ON `typeObject`.`id_listType` = `listTypes`.`id`; 	
+		
+3.  Добавление столбеца id_listPrioritie в таблицу `contentSubServices`
+	
+	ALTER TABLE  `contentSubServices` ADD  `id_listPrioritie` INT NOT NULL AFTER  `id_typeObject`;
+
+4. 	Добавление внешнего ключа в таблицу contentSubServices	
+
+	ALTER TABLE `contentSubServices` ADD CONSTRAINT FOREIGN KEY (id_listPrioritie) REFERENCES `listPriorities`(id);	
+	
+5. Переопределение представления view_contentsubservices
+
+		CREATE  VIEW `view_contentsubservices` AS
+		SELECT `contentSubServices`.`id` AS `id:№ (i)`, `listTypes`.`typeValue` AS 'id_listType:Тип (l)', 
+	   		  `typeObject`.`code` AS 'code:Код (w)', `typeObject`.`label` AS 'label:Описание (w)',
+		   	  `typeObject`.`require` AS 'require:Обязательность (c)', `typeObject`.`message` AS 'message:Сообщение (w)', 
+		      `typeObject`.`defaultValue` AS 'defaultValue:Значение по умолчанию (w)', 
+		      `listPriorities`.`valuePriority` AS 'id_listPrioritie:Приоритет элемента (l)',
+		      `typeObject`.`id_supplier` AS 'id_supplier:Поставщик',
+		      `contentSubServices`.`id_subService` AS 'id_subService:Код подуслуги'
+	    FROM `contentSubServices`
+		INNER JOIN `subServices`
+		ON `contentSubServices`.`id_subService` = `subServices`.`id`
+		INNER JOIN `typeObject`
+		ON `contentSubServices`.`id_typeObject` = `typeObject`.`id`
+		INNER JOIN `listTypes`
+		ON `typeObject`.`id_listType` = `listTypes`.`id`
+		INNER JOIN `listPriorities`
+		ON `contentSubServices`.`id_listPrioritie` = `listPriorities`.`id`;
+
+===================================================================		
+
+14.11.05
+		
+1. Доработка Java классов. Формирвоание SQLзапросов.
+ 
+2. Доработка func.js
+
+====================================================================
+
+14.11.11
+
+1. Устранение ошибок реализации логирования удалено наследование Logger. Используется объект из Activity.
+
+====================================================================
+
+14.11.21
+
+1. Устранены ошибка загрузки скриптов. Доработан : метод statusCompliteRequest класса Validate,	
+												   метод getMapParams класса Activity;											
+									   Доработан файл скриптов - func.js : 
+									   			   добавлена финкция formatSendData (реализована не универсально 
+									   			   только для блоковc (css) class="c_form_blok"),;
+									   			   вызывается перед save() по onClick();
+
+2. Введение системных переменных начинаются с "system_" + логическая часть. 
+   Неоходимо удалять из Process.map после выполнения запроса.
+
+  system_isLabel - получение основного описания записи в БД по ID
+									   			   
+====================================================================									   			   
+
+14.11.25									   			   
+
+1. Реализовано подробное отображение для Содержимого справочников и Элементов подуслуг
+   доработаны  : класс AbstracrtEvents метод getLabel(); 
+   				 класс QuerySelect раздел SHOW;
+   				 класс ViewTable метод create()
+   				 
+2. Удалено наследование в классах Query*** extends ResultSQL пакета com.oep.db.sql
+====================================================================
+
+14.12.02
+
+1. Реализован интерфейс ContextTools для создания  настраиваемых блоков опций.   				 
+
+2. Реализован класс SystemTools для отображения настроик системы.
+									   
+3. Введение переменных :
+	 system_pathLog - пусть к файлам логов,
+	 system_isLog - статус логирования системы												   
+		
+		
+14.12.08
+====================================================================
+
+1. Доработка классов для формирвоания формы "Настройки системы"		
+
+2. Формирвоание файла systemConfig.properties
+
+
+14.12.10
+====================================================================
+
+1. Реализован функционал работы с systemConfig.properties
+	(ТЕСТИРОВАНИЕ. БАГ : идет не перезапись, а добавление новых значений при каждом зменении)
+	
+2. 	Изменен класс c_form в content.css
+
+3. Изменение структуры проекта :
+		создание пакета com.oep.elements.tools - перенесены классы FilterTools, SystemTools. VisibleTools
+		перенесенs интерфейсы : Page, Tables, Forms в com.oep.elements
+
+4. Изменение имен : ContextTools(ContentTools) - Tools		
+
+14.12.19
+====================================================================
+
+1. Отлажен функционал построения контента блоков.
+
+2. В контент блоков выведены настройки логирования системы.
+
+
+14.12.28
+====================================================================
+
+Введение переменной system_arrayId - массив идентификаторов ОДНОГО стоблца. 
+
+15.01.01 -15.03.10
+====================================================================
+Обновление логики работы конфигуратора =)
+
+
+15.03.12
+====================================================================
+
+1.Добавление столбца external_code_field в таблицу  typeObject
+
+ALTER TABLE  `typeObject` ADD  `external_code_field` VARCHAR( 25 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER  `code`
+
+2. Добавление столбца external_code_service в subServices
+
+ALTER TABLE  `subServices` ADD  `external_code_service` VARCHAR( 25 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER  `name_subService`
+
+3. Переопределение представления view_typeobject
+
+		DROP VIEW  `view_typeobject`;
+
+		CREATE VIEW `view_typeobject` AS
+		SELECT `typeObject`.`id` AS `id:№ (i)`, `listTypes`.`typeValue` AS 'id_listType:Тип (l)', 
+			   `typeObject`.`code` AS 'code:Код (w)', `typeObject`.`external_code_field` AS 'external_code_field: Код в системе поставщика(w)', 
+			   `typeObject`.`label` AS 'label:Описание (w)', `typeObject`.`require` AS 'require:Обязательность (c)', `typeObject`.`message` AS 'message:Сообщение (w)', 
+			   `typeObject`.`defaultValue` AS 'defaultValue:Значение по умолчанию (w)', 
+			   `typeObject`.`id_supplier` AS 'id_supplier:Поставщик',`id_supplier`
+		FROM `typeObject`
+		INNER JOIN `listTypes`
+		ON `typeObject`.`id_listType` = `listTypes`.`id`;
+		
+4. Обновлены запросы к typeobject в классах : QuerySelect, QueryInsert, QueryUpdtae ! НЕ ОТТЕСТИРОВАНО		
+
+5. Переопределение представления view_subservices
+
+		DROP VIEW  `view_subservices`;
+		
+		CREATE VIEW view_subservices AS
+		SELECT `id` AS 'id:№', `name_subService` AS 'name_subService:Наименование',
+			   `external_code_service` AS 'external_code_service:Код услуги у поставщика (w)', `id_service` 
+		FROM `subServices`
+		
+15.03.13
+========================================================================
+1. обновлена реализация class AbstractTable
+
+2. Стили собраны в один раздел файл content.css
+
+3. Реализована выгрузка полей из рапиды
+
+15.03.17
+========================================================================
+1. Переопределен размер столбца value_param в таблице contentDictionaries
+
+	ALTER TABLE  `contentDictionaries` 
+	CHANGE  `value_param`  `value_param` VARCHAR( 250 ) 
+	CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL
+	
+2. Реализована выгрузка справочников из Рапиды
+
+
+15.03.18
+=========================================================================
+
+1. Переопределение представления view_contentSubServices
+
+	DROP VIEW  `view_contentsubservices`
+	
+	CREATE  VIEW `view_contentsubservices` AS
+	SELECT `contentSubServices`.`id` AS `id:№ (i)`, `listTypes`.`typeValue` AS 'id_listType:Тип (l)', 
+		   `typeObject`.`code` AS 'code:Код (w)', `typeObject`.`external_code_field` AS 'external_code_field: Код в системе поставщика(w)',  
+		   `typeObject`.`label` AS 'label:Описание (w)',
+		   `typeObject`.`require` AS 'require:Обязательность (c)', `typeObject`.`message` AS 'message:Сообщение (w)', 
+		   `typeObject`.`defaultValue` AS 'defaultValue:Значение по умолчанию (w)', 
+		   `listPriorities`.`valuePriority` AS 'id_listPrioritie:Приоритет элемента (l)',
+		   `typeObject`.`id_supplier` AS 'id_supplier:Поставщик',
+		   `contentSubServices`.`id_subService` AS 'id_subService:Код подуслуги'
+		    FROM `contentSubServices`
+			INNER JOIN `subServices`
+			ON `contentSubServices`.`id_subService` = `subServices`.`id`
+			INNER JOIN `typeObject`
+			ON `contentSubServices`.`id_typeObject` = `typeObject`.`id`
+			INNER JOIN `listTypes`
+			ON `typeObject`.`id_listType` = `listTypes`.`id`
+			INNER JOIN `listPriorities`
+			ON `contentSubServices`.`id_listPrioritie` = `listPriorities`.`id`;
+			
+						
+15.03.24
+============================================================================
+
+1.Синхронизироаны входные параметры в doGet - локальный объект mapDoGet 
+  и в doPost - глобальный объект public static buffMap. 
+  
+  Новый используемый объект - глобальный private inputData
+  
+15.03.25
+=============================================================================
+
+1. Функционал фильтрации по столбцу перенесен в реализацию Таблиц  
+
+2. Добавление поля `defaultValue` в таблицу `contentSubServices`
+
+	INFO! Приоритет поля `contentSubServices`.`defaultValue` выше, чем `typeObject`.`defaultValue`.
+		  IF(`contentSubServices`.`defaultValue` == ПУСТО) 
+		    IF(`typeObject`.`defaultValue` == ПУСТО)
+		      В ОБЪЕКТ ЗАПИСЫВАЕТСЯ "";
+		  
+
+	ALTER TABLE  `contentSubServices` ADD  `defaultValue` VARCHAR( 500 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER  `id_listPrioritie`;	
+	
+	DROP VIEW  `view_contentsubservices`;
+	
+	CREATE  VIEW `view_contentsubservices` AS
+	SELECT `contentSubServices`.`id` AS `id:№ (i)`, `typeObject`.`code` AS 'code:Код (w)',
+			`typeObject`.`id` AS 'id_typeObject:Внутренний ИД поля (i)',
+			`typeObject`.`external_code_field` AS 'external_code_field: Код в системе поставщика(w)',  
+		   `typeObject`.`label` AS 'label:Описание (w)',                
+		   `contentSubServices`.`defaultValue` AS 'defaultValue:Знач. по умолч. индивид-е.(w)', 
+		   `listPriorities`.`valuePriority` AS 'id_listPrioritie:Приоритет элемента (l)',
+		   `typeObject`.`id_supplier` AS 'id_supplier:Поставщик',
+		   `contentSubServices`.`id_subService` AS 'id_subService:Код подуслуги'
+		    FROM `contentSubServices`
+			INNER JOIN `subServices`
+			ON `contentSubServices`.`id_subService` = `subServices`.`id`
+			INNER JOIN `typeObject`
+			ON `contentSubServices`.`id_typeObject` = `typeObject`.`id`
+			INNER JOIN `listTypes`
+			ON `typeObject`.`id_listType` = `listTypes`.`id`
+			INNER JOIN `listPriorities`
+			ON `contentSubServices`.`id_listPrioritie` = `listPriorities`.`id`;
+	
+15.03.31
+====================================================================================================
+1. Создание таблицы listGroupObjects
+
+	CREATE TABLE  `terminal`.`listGroupObjects` (
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+		`description_group` VARCHAR( 500 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+		`id_service` INT NOT NULL
+	) ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci;
+	
+2. Создание таблицы contentGroupObjects
+
+	CREATE TABLE  `terminal`.`contentGroupObjects` (
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+		`id_listGroupObject` INT NOT NULL ,
+		`id_typeObject` INT NOT NULL
+	) ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci;
+	
+3. Сформирвоан новый раздел для групп объектов		
+
+15.04.01
+===================================================================================================
+
+1. Представление содержимого групп объектов
+
+	CREATE VIEW`view_contentgroupobjects` AS
+	SELECT `typeObject`.`id` AS 'id:№ (i)', `listTypes`.`typeValue` AS 'id_listType:Тип (l)',
+		   `typeObject`.`code` AS 'code:Код (w)', 
+		   `typeObject`.`external_code_field` AS 'external_code_field: Код в системе поставщика(w)',
+		   `typeObject`.`label` AS 'label:Описание (w)',
+		   `listGroupObjects`.`description_group` AS 'id_listGroupObject:Группа объекта (l)',
+		   `listGroupObjects`.`id_service` 
+	FROM `contentGroupObjects`
+	INNER JOIN `typeObject`
+	ON `typeObject`.`id` = `contentGroupObjects`.`id_typeObject`
+	INNER JOIN `listGroupObjects`
+	ON `listGroupObjects`.`id` = `contentGroupObjects`.`id_listGroupObject`
+	INNER JOIN `listTypes`
+	ON `listTypes`.`id` = `typeObject`.`id_listType`
+	
+
+15.04.02
+===================================================================================================	
+
+1. Реализован функционал добавления объектов из группы
+
+2. Переопределено представелние содержимого групп объектов 
+  
+  	CREATE VIEW`view_contentgroupobjects` AS
+	SELECT `contentGroupObjects`.`id` AS 'id:№ (i)', `listTypes`.`typeValue` AS 'id_listType:Тип (l)',
+		   `typeObject`.`code` AS 'code:Код (w)', 
+		   `typeObject`.`external_code_field` AS 'external_code_field: Код в системе поставщика(w)',
+		   `typeObject`.`label` AS 'label:Описание (w)',
+		   `contentGroupObjects`.`id_listgroupObject` AS 'id_listGroupObject:Код группы',
+		   `listGroupObjects`.`id_service` 
+	FROM `contentGroupObjects`
+	INNER JOIN `typeObject`
+	ON `typeObject`.`id` = `contentGroupObjects`.`id_typeObject`
+	INNER JOIN `listGroupObjects`
+	ON `listGroupObjects`.`id` = `contentGroupObjects`.`id_listGroupObject`
+	INNER JOIN `listTypes`
+	ON `listTypes`.`id` = `typeObject`.`id_listType`
+  
+ 15.04.03 
+=====================================================================================================
+
+1. Создение представления для групп элементов
+
+		CREATE VIEW `view_listgroupobjects` AS						   
+		SELECT `listGroupObjects`.`id` AS 'id:№ (i)', 
+			   `listGroupObjects`.`description_group` AS 'description_group:Наименование группы (w)',
+			   `services`.`name_service` AS 'id_service:Услуга (l)',
+			   `services`.`id_supplier`
+		FROM `listGroupObjects`
+		INNER JOIN `services`
+		ON `services`.`id` = `listGroupObjects`.`id_service`
+		INNER JOIN `suppliers`
+		ON `suppliers`.`id` = `services`.`id_supplier`;   	
+		
+
+15.04.24
+=====================================================================================================
+1. Добавление новых урвней приоритета элементов
+
+UPDATE  `terminal`.`listPriorities` SET  `valuePriority` =  'Уровень 5' WHERE  `listPriorities`.`id` =5 LIMIT 1 ;
+
+INSERT INTO  `terminal`.`listPriorities` (`id` ,`valuePriority`) VALUES ('6',  'Уровень 6');
+INSERT INTO  `terminal`.`listPriorities` (`id` ,`valuePriority`) VALUES ('7',  'Уровень 7');
+INSERT INTO  `terminal`.`listPriorities` (`id` ,`valuePriority`) VALUES ('8',  'Уровень 8');
+INSERT INTO  `terminal`.`listPriorities` (`id` ,`valuePriority`) VALUES ('9',  'Уровень 9');
+INSERT INTO  `terminal`.`listPriorities` (`id` ,`valuePriority`) VALUES ('10',  'Самый высокий приоритет (10)');
+
+15.02.27
+=====================================================================================================
+1.Изменение длинны поля значения по умолчанию в таблице содержимое подуслуг
+
+ALTER TABLE  `contentSubServices` CHANGE  `defaultValue`  `defaultValue` VARCHAR( 1000 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
+<----ОБНОВЛЕНО НА ПРОДЕ---->
+
+
+15.11.15
+=====================================================================================================
+
+1. Создан новый пакет com.oep.util.debug
+
+Пакет для отладочных тестов
+
+2. Доработан класс SQLFactory
+
+	2.a добавлен метод public static SQL getQueryObject(TypeEvents action) - использовать для получения объектов 
+																			 для формироание запросов к БД.
+	2.b добавлен альтернативный метод private SQL create(TypeEvents action) 															 
+																 
+	2.c измененено получение объектов формирующих запрос в классе ResultSQL															 
+
+3. Добавление столбца описания справочника (description_dictionary) в таблицу dictionaries	
+ 
+	ALTER TABLE  `dictionaries` ADD `description_dictionary` VARCHAR(500) AFTER `name_dictionary`;
+	
+4. Переопределение 	представления view_dictionaries 
+
+	DROP VIEW `view_dictionaries`; 
+	
+	CREATE VIEW `view_dictionaries` AS		 		 
+	  SELECT `view_dictionaries`.`id:№ (i)`, `view_dictionaries`.`name_dictionary:Наименование справочника (w)`,
+	  		 `view_dictionaries`.`description_dictionary:Описание (w)`
+	  FROM `view_dictionaries` 
+	  ORDER BY `id:№ (i)`;
+		 
+
+15.11.18
+=====================================================================================================
+
+1. Закомментирвоана реализация видимости столбцов в ViewPage
+
+2. Заменено в классе AbstractTableTools
+
+ 	input.addAttr("placeholder", metaData.getColumnName(i).split(":")[1]);	
+	на
+	input.addAttr("placeholder", metaData.getColumnLabel(i).split(":")[1]);
+	
+	input.addAttr("placeholder", metaData.getColumnName(i).split(":")[1]);
+	на
+	input.addAttr("placeholder", metaData.getColumnLabel(i).split(":")[1]);		 
+	
+3. Скорректировано условие по преобразованию span в textarea клсаа	AbstractTable 
+
+4. Поправлены  SQL запросы SELECT, INSERT, UDATE для dictionaries	
+
+15.11.19
+=====================================================================================================
+
+1. Преобразование представления view_contentsubservices
+
+CREATE VIEW  `view_contentsubservices` AS
+SELECT `contentsubservices`.`id` as `id:№ (i)`, `typeobject`.`id` AS `id_typeObject:Внутренний № элемента (i)`,	
+	   `listtypes`.`typeValue` AS `id_listType:Тип элемента (l)`, `typeobject`.`label` AS `label:Описание (w)`,
+	   `listpriorities`.`valuePriority` AS `id_listPrioritie:Приоритет построения (l)`,
+	   `contentsubservices`.`defaultValue` as `defaultValue:Знач. по умолч. индивид-е (w)`,
+	   `contentsubservices`.`id_subService` AS `id_subService:Процедура`,
+	   `typeobject`.`id_supplier` AS `id_supplier:Провайдер`
+FROM `contentsubservices`
+INNER JOIN `typeobject`
+ON `contentsubservices`.`id_typeObject`= `typeobject`.`id`
+INNER JOIN `listtypes`
+ON `typeobject`.`id_listType` = `listtypes`.`id`
+INNER JOIN `listpriorities`
+ON `contentsubservices`.`id_listPrioritie` = `listpriorities`.`id`
+
+2. Рефакторинг класса QuerySelect
+
+3. Добавление поля location  в таблицу terminals
+
+ALTER TABLE  `terminals` ADD  `location` VARCHAR( 500 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER  `code_terminal`;
+
+4. Переопределение представления view_terminals
+
+CREATE VIEW `view_terminals` AS 
+SELECT `terminals`.`id` AS `id:№ (i)`,`terminals`.`code_terminal` AS `code_terminal:Внешний код терминала (w)`, 
+	   `terminals`.`location` AS `location:Расположение (w)`
+FROM `terminals`;
+
+5. Скорректированы запросы в классах QueryInsert, QueryUpdate
+
+6. Введение системной переменной system_numberPage - передает номер страницы для отображения
+	ОБЯЗЕТЕЛЬНО в месте с этим параметром должен быть передан корректный параметр table,
+	иначе апрос на выборку может сформироваться НЕКОРРЕКТНО!!!
+	
+7. Добавлен новый метод addOFFSET в класс QuerySelect	
+
+8. Рефакторинк скрипта viewData.js 
+	
+	Добавление функции viewTenRecordsOfTable
+	Обновлдены функции next() pre()
+	Добавление обработки отрисовки не подвергшихся изменению записей таблицы функция addRowInTable 
+
+9. Переопределение представления `view_commissionservices`
+
+CREATE VIEW `view_commissionservices` AS 
+SELECT `commissionServices`.`id` AS `id:№ (i)`,`services`.`name_service` AS `id_service:Услуга (l)`,
+	   `terminals`.`code_terminal` AS `id_terminal:Терминал (l)`,
+	   `commissions`.`descriptionCommission` AS `id_commission:Скрипт коммисии (l)` 
+FROM (((`commissionServices` join `services` on((`commissionServices`.`id_service` = `services`.`id`))) join `terminals` on((`commissionServices`.`id_terminal` = `terminals`.`id`))) join `commissions` on((`commissionServices`.`id_commission` = `commissions`.`id`)));
+
+
+15.11.20
+====================================================================================================
+
+1.  Класс Logger перенесет  в пакет com.oep.utils, пакет com.oep.logger удален
+
+2.  Класс Validate перенесет  в пакет com.oep.utils
+
+3.  Пакет com.oep.validate переименован в com.oep.error  
+
+4. Созданы пакеты в resource
+
+	com.oep.html, com.oep.log, com.oep.sql, com.oep.commissions
+
+5. Рефакторинг класса Activity. Использование классов SpecialSumpol, Encoding
+
+15.11.23
+====================================================================================================	
+
+1. Реализация нового функционала фильтрации. Отлака на терминалах
+
+15.11.24
+====================================================================================================	
+
+1. Добавление фильтра в services, typeObject, commissionServices
+
+2. Пересоздание таблиц listGroupObjects от 15.03.31
+
+					   contentGroupObjects от 15.03.31
+
+3. Пересоздание представлений :  содержимого групп объектов view_contentGroupObjects от 15.04.02
+ 
+						 		 групп элементов view_listGroupObjects от 15.04.03  
+
+15.11.24
+====================================================================================================
+1. Обновлена реализация вертикального и горизонтального меню класс Navigation
+
+2. Перенос раздела Терминалы в группу Услуги
+
+3. Создание таблицы дефалтовых комиссий по услугам commissionServicesDefault
+
+	CREATE TABLE  `terminal`.`commissionServicesDefault` (
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+		`id_service` INT NOT NULL,
+		`id_commission` INT NOT NULL
+	) ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+15.12.01
+====================================================================================================
+1. Рефакторинг построение дерева
+
+15.12.02
+====================================================================================================
+
+1. Рефакторинг скриптов
+
+2. Добавление новых запросов на выборку
+
+3. Предварительный релиз на 7775
+
+15.12.11
+====================================================================================================
+
+1. Добавлен класс Resource, Authorization
+
+2. Рефакторинг класса Activity, Processbackground
+
+3. Добавлены новые процессы в ListBackgoundProcess : AUTHORIZATION, INITIALIZATION
+
+4. Рефакторинг справочника ListTable, добавление справочника Menu
+
+5. Постепнное удаление получений иконки из ListTable
+
+16.02.11
+====================================================================================================
+1. Создание новой таблицы classServices - привязка определенной слуги к модулю конечной реализации
+
+CREATE TABLE  `terminal`.`classServices` (
+	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	`id_service` INT NOT NULL,
+	`external_code` VARCHAR(25) DEFAULT '',
+	`className` VARCHAR(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+2. Переопределение представления view_services
+
+CREATE VIEW `view_services` AS 
+SELECT `services`.`id` AS `id:№ (i)`,`services`.`name_service` AS `name_service:Услуга (w)`,
+	   `services`.`code_service` AS `code_service: Внешний код сервиса (w)`,
+	   `suppliers`.`name_supplier` AS `id_supplier:Поставщик (l)`,
+	   `services`.`service_access` AS `service_access:Доступ (c)`, 
+	   `classServices`.`className` AS `className:Используемый модуль(w)`
+FROM `services`
+INNER JOIN `suppliers` ON `services`.`id_supplier` = `suppliers`.`id` 
+LEFT JOIN `classServices` ON `services`.`id` = `classServices`.`id_service`;
+
+3. Добавлена обработка чекбоксв при переходе по страничкам.(JS viewData)
+
+4. Добавлена обработка полей с типов (w) при отсутствии в них пробелов. (JS viewData)
+
+5. Скорректирован размер блока в разделе "Терминалы"
+
+6. Корректировака раздела "Настройки системы"
+
+

@@ -1,0 +1,9 @@
+view_users - 16.02.01
+==================================================
+CREATE TABLE  `terminal`.`classServices` (
+	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	`id_service` INT NOT NULL,
+	`external_code` VARCHAR(25) DEFAULT '',
+	`className` VARCHAR(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

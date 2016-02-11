@@ -1,0 +1,143 @@
+view_users - 15.04.15
+==================================================
+CREATE VIEW `view_users` AS 
+SELECT `users`.`id` AS `id:№ (i)`, `users`.`login` AS `login:Логин (w)`,
+	   `users`.`description_user` AS `description_user:Описание (w)` 
+FROM `users`;
+
+view_typeobject - 15.04.15
+==================================================
+CREATE VIEW `view_typeobject` AS 
+SELECT `typeObject`.`id` AS `id:№ (i)`,`listTypes`.`typeValue` AS `id_listType:Тип (l)`,
+	   `typeObject`.`code` AS `code:Код (w)`,`typeObject`.`external_code_field` AS `external_code_field: Код в системе поставщика(w)`,
+	   `typeObject`.`label` AS `label:Описание (w)`,`typeObject`.`require` AS `require:Обязательность (c)`,
+	   `typeObject`.`message` AS `message:Сообщение (w)`,`typeObject`.`defaultValue` AS `defaultValue:Значение по умолчанию (w)`,
+	   `typeObject`.`id_supplier` AS `id_supplier:Поставщик`,`typeObject`.`id_supplier` AS `id_supplier` 
+FROM (`typeObject` join `listTypes` on((`typeObject`.`id_listType` = `listTypes`.`id`)));
+
+view_commissions - 15.04.15
+==================================================
+CREATE VIEW `view_commissions` AS 
+SELECT `commissions`.`id` AS `id:№ (i)`,`commissions`.`descriptionCommission` AS `descriptionCommission: Короткое описание (w)`,
+	   `commissions`.`scriptCommission` AS `scriptCommission:Скрипт коммиссии (w)`
+FROM `commissions`;
+
+view_commissionservices - 15.04.15
+==================================================
+CREATE VIEW `view_commissionservices` AS 
+SELECT `commissionServices`.`id` AS `id:№ (i)`,`services`.`name_service` AS `id_service:Услуга (l)`,
+	   `terminals`.`code_terminal` AS `id_terminal:Терминал (l)`,
+	   `commissions`.`scriptCommission` AS `id_commission:Скрипт коммисии (l)` 
+FROM (((`commissionServices` join `services` on((`commissionServices`.`id_service` = `services`.`id`))) join `terminals` on((`commissionServices`.`id_terminal` = `terminals`.`id`))) join `commissions` on((`commissionServices`.`id_commission` = `commissions`.`id`)));
+
+view_contentdictionaries - 15.04.15
+==================================================
+CREATE VIEW `view_contentdictionaries` AS 
+SELECT `contentDictionaries`.`id` AS `id:№ (i)`,`contentDictionaries`.`code_param` AS `code_param:Код (w)`,
+	   `contentDictionaries`.`value_param` AS `value_param:Значение (w)`,
+	   `contentDictionaries`.`id_dictionarie` AS `id_dictionarie:Справочник`
+FROM `contentDictionaries`;
+
+view_contentsubservices - 15.11.19
+==================================================
+CREATE VIEW  `view_contentsubservices` AS
+SELECT `contentsubservices`.`id` as `id:№ (i)`, `typeobject`.`id` AS `id_typeObject:Внутренний № элемента (i)`,	
+	   `listtypes`.`typeValue` AS `id_listType:Тип элемента (l)`, `typeobject`.`label` AS `label:Описание (w)`,
+	   `listpriorities`.`valuePriority` AS `id_listPrioritie:Приоритет построения (l)`,
+	   `contentsubservices`.`defaultValue` as `defaultValue:Знач. по умолч. индивид-е (w)`,
+	   `contentsubservices`.`id_subService` AS `id_subService:Процедура`,
+	   `typeobject`.`id_supplier` AS `id_supplier:Провайдер`
+FROM `contentsubservices`
+INNER JOIN `typeobject`
+ON `contentsubservices`.`id_typeObject`= `typeobject`.`id`
+INNER JOIN `listtypes`
+ON `typeobject`.`id_listType` = `listtypes`.`id`
+INNER JOIN `listpriorities`
+ON `contentsubservices`.`id_listPrioritie` = `listpriorities`.`id`
+
+view_dictionaries - 15.11.18
+==================================================
+CREATE VIEW `view_dictionaries` AS 
+SELECT `dictionaries`.`id` AS `id:№ (i)`,`dictionaries`.`name_dictionary` AS `name_dictionary:Наименование справочника (w)`,
+	   `dictionaries`.`description_dictionary` AS `description_dictionary:Описание (w)`,
+	   `dictionaries`.`id_supplier` AS `id_supplier:Поставщик` 
+FROM `dictionaries`;
+
+view_listtypes - 15.04.15
+==================================================
+CREATE VIEW `view_listtypes` AS 
+SELECT `listTypes`.`id` AS `id:№ (w)`,`listTypes`.`typeValue` AS `typeValue:Тип (w)` 
+FROM `listTypes`;
+
+view_profileaccess - 15.04.15
+==================================================
+CREATE VIEW `view_profileaccess` AS 
+SELECT `profileAccess`.`id` AS `id:№ (i)`,`roles`.`code_role` AS `id_role:Роль (l)`,
+	   `users`.`login` AS `id_user:Логин (l)`,`suppliers`.`name_supplier` AS `id_supplier:Представляет организацию (l)`,
+	   `profileAccess`.`password` AS `password:Пароль(w)`,
+	   `profileAccess`.`profile_access` AS `profile_access:Статус учетной записи (c)`
+FROM (((`profileAccess` join `roles` on((`profileAccess`.`id_role` = `roles`.`id`))) join `users` on((`profileAccess`.`id_user` = `users`.`id`))) join `suppliers` on((`profileAccess`.`id_supplier` = `suppliers`.`id`)));
+
+view_roles - 15.04.15
+==================================================
+CREATE VIEW `view_roles` AS 
+SELECT `roles`.`id` AS `id:№ (i)`,`roles`.`code_role` AS `code_role:Наименование роли (w)`,
+	   `roles`.`description_role` AS `description_role:Описание Роли (w)` 
+FROM `roles`;
+
+view_scripts - 15.04.15
+==================================================
+CREATE VIEW `view_scripts` AS 
+SELECT `scripts`.`id` AS `id:№ (i)`,`scripts`.`psevdoNameScript` AS `psevdoNameScript:Описание скрипта (w)`,
+	   `scripts`.`script` AS `script:Скрипт (w)`,`scripts`.`id_supplier` AS `id_supplier:Код поставщика` 
+FROM `scripts`;
+
+view_scriptsobject - 15.04.15
+==================================================
+CREATE VIEW `view_scriptsobject` AS 
+SELECT `scriptsObject`.`id` AS `id:№ (i)`,`scripts`.`script` AS `script:Скрипт (w)`,
+	   `scripts`.`psevdoNameScript` AS `psevdoNameScript:Описание скрипта (w)`,
+	   `scriptsObject`.`id_typeObject` AS `id_typeObject:Код объекта` 
+FROM (`scriptsObject` join `scripts`) WHERE (`scriptsObject`.`id_script` = `scripts`.`id`);
+
+view_services - 15.04.15
+==================================================
+CREATE VIEW `view_services` AS 
+SELECT `services`.`id` AS `id:№ (i)`,`services`.`name_service` AS `name_service:Услуга (w)`,
+	   `services`.`code_service` AS `code_service: Внешний код сервиса (w)`,
+	   `suppliers`.`name_supplier` AS `id_supplier:Поставщик (l)`,
+	   `services`.`service_access` AS `service_access:Доступ (c)` 
+FROM (`services` join `suppliers` on((`services`.`id_supplier` = `suppliers`.`id`)));
+
+view_subservices - 15.04.15
+==================================================
+CREATE VIEW `view_subservices` AS 
+ SELECT `subServices`.`id` AS `id:№`,`subServices`.`name_subService` AS `name_subService:Наименование`,
+		`subServices`.`external_code_service` AS `external_code_service:Код услуги у поставщика (w)`,
+		`subServices`.`id_service` AS `id_service` 
+FROM `subServices`;
+
+view_suppliers - 15.04.15
+==================================================
+CREATE VIEW `view_suppliers` AS 
+SELECT `suppliers`.`id` AS `id:№ (i)`,`suppliers`.`name_supplier` AS `name_supplier:Наименование (w)`
+FROM `suppliers`;
+
+view_terminals - 15.11.19
+==================================================
+CREATE VIEW `view_terminals` AS 
+SELECT `terminals`.`id` AS `id:№ (i)`,`terminals`.`code_terminal` AS `code_terminal:Внешний код терминала (w)`, 
+	   `terminals`.`location` AS `location:Расположение (w)`
+FROM `terminals`;
+
+view_services - 16.01.11
+==================================================
+CREATE VIEW `view_services` AS 
+SELECT `services`.`id` AS `id:№ (i)`,`services`.`name_service` AS `name_service:Услуга (w)`,
+	   `services`.`code_service` AS `code_service: Внешний код сервиса (w)`,
+	   `suppliers`.`name_supplier` AS `id_supplier:Поставщик (l)`,
+	   `services`.`service_access` AS `service_access:Доступ (c)`, 
+	   `classServices`.`className` AS `className:Используемый модуль(w)`
+FROM `services`
+INNER JOIN `suppliers` ON `services`.`id_supplier` = `suppliers`.`id` 
+LEFT JOIN `classServices` ON `services`.`id` = `classServices`.`id_service`;

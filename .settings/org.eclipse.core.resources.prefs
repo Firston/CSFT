@@ -1,0 +1,14 @@
+#Mon Nov 30 13:01:00 MSK 2015
+eclipse.preferences.version=1
+encoding//resources/config.properties=UTF-8
+encoding//resources/entry.html=UTF-8
+encoding//src/com/oep/buket/SQLFactory_before151115.java=UTF-8
+encoding//src/com/oep/db/sql/QueryDelete.java=UTF-8
+encoding//src/com/oep/db/sql/QueryInsert.java=UTF-8
+encoding//src/com/oep/db/sql/QuerySelect.java=UTF-8
+encoding//src/com/oep/db/sql/QueryUpdate.java=UTF-8
+encoding//src/com/oep/db/sql/ResultSQL.java=UTF-8
+encoding//src/com/oep/db/sql/SQL.java=UTF-8
+encoding//src/com/oep/db/sql/SQLFactory.java=UTF-8
+encoding//src/com/oep/process/ProcessForeground.java=UTF-8
+encoding/<project>=UTF-8
