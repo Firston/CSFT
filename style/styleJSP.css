@@ -1,0 +1,121 @@
+/*
+#entry_body{
+	background-color: #dddfff;
+	height: 300px;
+	margin-left: 40%;
+	position: absolute;
+	width: 300px; 
+	border: 1px;
+}
+*/
+#entry_body{
+  background:url("/CSFT/image/vhod.png") no-repeat;
+  width:774px;
+  height:324px;
+  margin:100px auto;
+  position: relative;
+  font-family: "Arial Unicode MS";
+ }
+ 
+ 
+  .logovhod{
+  background:url("/CSFT/image/logo.png") no-repeat;
+  width:345px;
+  height:76px;
+  position:absolute;
+  top:113px;
+  left:53px;
+ }
+/*
+#entry_label{
+	align : left;
+	margin: 5%;
+	color: #836fff;
+	size: 16pt;"
+}
+*/
+  #entry_label{
+  color:#5b5c5e;
+  font-size:21pt;
+  position:absolute;
+  left:500px;
+  top:36px;
+ }
+
+.block_input1 input{
+  position:absolute;
+  left:499px;
+  top:105px;
+  width:240px;
+  background: #fff;
+  height:33px;
+ }
+ 
+ .block_input1 div{
+  background:url("/CSFT/image/polzovatel.png") no-repeat 6px 6px,
+     #fff;
+  height:37px;
+  width:36px;
+  position:absolute;
+  left:462px;
+  top:105px;
+  border:1px solid #a5a6a8; 
+ }
+ 
+ .block_input2 div{
+  background: url("/CSFT/image/key.png") no-repeat 6px 6px,
+  #fff;
+  height:37px;
+  width:36px;
+  position:absolute;
+  left:462px;
+  top:167px;
+  border:1px solid #a5a6a8; 
+ }
+ .block_input2 input{
+  position:absolute;
+  left:499px;
+  top:167px;
+  width:240px;
+  background: #fff;
+  height:33px;
+ }
+ 
+  #typeEvent1{
+  position:absolute;
+  left:475px;
+  top:242px;
+  width:256px;
+  background: url("/CSFT/image/vhod_knopka.png") no-repeat -2px -2px;
+  height:36px;
+ }
+ 
+ #typeEvent1:hover{
+  background: url("/CSFT/image/vhod_knopka_nazhatie.png") no-repeat -2px -2px;
+ }
+ 
+.block_input{
+	position: relative;
+	width: 100%;
+	height: 50px; 
+	text-align: center;
+}
+
+#info_body{
+	width: 50%;
+	margin-left: 25%;
+	background-color: #dddfff; 
+}
+
+#info_label{
+	text-align: left;
+	color: #228B22; 
+	size: 16pt;
+}
+
+.info_block_message{
+	position: relative;
+	width: 100%;
+	margin-left: 2%;
+	
+}

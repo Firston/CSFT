@@ -1,0 +1,49 @@
+#h_info{
+	float: right;
+	margin: 3% 1% auto;
+}
+ 
+ #h_logo img{
+  margin:34px 0 0 19px;
+  float:left;
+ }
+ 
+ #h_entryPerson{
+  color: rgb(137, 137, 137);
+  font-family: "Arial Unicode MS";
+  font-size: 14px;
+  text-shadow: 0.5px 0.866px 0px rgb( 255, 255, 255 );
+  float:left;
+  margin-top: 75px;
+  margin-left: 110px;
+ }
+ 
+ #exit{
+  background: url("/CSFT/image/vikluchenie.png") no-repeat 55px 3px;
+  font-size: 14px;
+  font-family: "Arial Unicode MS";
+  color: rgb( 137, 137, 137 );
+  text-shadow: 0.5px 0.866px 0px rgb( 255, 255, 255 );
+  width:87px;
+  height:28px;
+  border:none;
+  cursor:pointer;
+  text-align:left;
+  float:right;
+  margin:74px 36px 0 0;
+ }
+ 
+ #h_info a{
+  background: url("/CSFT/image/info.png") no-repeat 62px 3px;
+  font-size: 14px;
+  font-family: "Arial Unicode MS";
+  color: rgb( 137, 137, 137 );
+  text-shadow: 0.5px 0.866px 0px rgb( 255, 255, 255 );
+  padding:3px 31px 4px 0;
+  float:right;
+  margin:41px 16px 0 0;
+ }
+ 
+ #h_info h3 {
+  text-align:right;
+ }

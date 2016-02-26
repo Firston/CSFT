@@ -1,0 +1,36 @@
+.collapsible{
+	background-color:#B7C8FC; 
+	color:#737477;
+	background: url("/CSFT/image/palka.png") no-repeat 0 43px;
+	font-size: 14px;
+	font-weight: bold;
+}
+ #id_VM div input{
+ 	padding-top: 5px;
+	padding-left: 10px;
+	display: inline;
+ }
+  #id_VM div p{
+  	position: absolute;
+	margin-top: 0.5%;
+	padding-left: 35px;
+  	display: inline;
+  	font-weight: bold;
+  	color: #737477;
+ }
+ #id_VM div p:hover{
+  	color: #33363f;
+ }
+ #id_VM div div{
+ 	width: 95%; 	
+ 	height: 48px;
+ 	margin-left: 5%; 
+ }	
+ #id_VM div:hover{
+  background:#619be6;  
+  cursor:pointer;
+  color:#33363f;    	
+ }
+ 
+
+

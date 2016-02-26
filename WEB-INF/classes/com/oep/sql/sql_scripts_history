@@ -1,0 +1,779 @@
+=========================== ДЛЯ АДМИНКИ
+
+VIEW===================
+
+
+-----------------------------
+CREATE VIEW `view_profileaccess` AS
+SELECT `profileAccess`.`id` AS 'id:№ (i)',
+	   `roles`.`code_role` AS 'id_role:Роль (l)',
+	   `users`.`login` AS 'id_user:Логин (l)',	   
+	   `suppliers`.`name_supplier` AS 'id_supplier:Представляет организацию (l)',
+	   `profileAccess`.`password` AS 'password:Пароль(w)',
+	   `profileAccess`.`profile_access` AS 'profile_access:Статус учетной записи (c)'
+FROM `profileAccess`
+INNER JOIN `roles`
+ON `profileAccess`.`id_role` = `roles`.`id`
+INNER JOIN `users`
+ON `profileAccess`.`id_user` = `users`.`id`
+INNER JOIN `suppliers`
+ON `profileAccess`.`id_supplier` = `suppliers`.`id`
+
+
+----------------------------
+
+CREATE VIEW `view_commissions` AS
+SELECT `id` AS 'id:№ (i)', `descriptionCommission` AS `descriptionCommission: Короткое описание (w)`, `scriptCommission` AS 'scriptCommission:Скрипт коммиссии (w)'
+FROM `commissions`
+
+----------------------------
+CREATE VIEW `view_terminals` AS
+SELECT `id` AS 'id:№ (i)', `code_terminal` AS 'code_terminal:Внешний код терминала (w)'
+FROM `terminals`
+
+----------------------------
+
+CREATE VIEW `view_commissionservices` AS
+SELECT `commissionServices`.`id` AS 'id:№ (i)',
+		`services`.`name_service` AS `id_service:Услуга (l)`,
+		`terminals`.`code_terminal` AS 'id_terminal:Терминал (l)',
+		`commissions`.`scriptCommission` AS 'id_commission:Скрипт коммисии (l)'
+FROM `commissionServices`
+INNER JOIN `services`
+ON `commissionservices`.`id_service` = `services`.`id`	   
+INNER JOIN `terminals`
+ON `commissionservices`.`id_terminal` = `terminals`.`id`
+INNER JOIN `commissions`
+ON `commissionservices`.`id_commission` = `commissions`.`id`
+	   
+----------------------------
+
+CREATE VIEW `view_roles` AS									 
+SELECT `id` AS 'id:№ (i)', code_role AS 'code_role:Наименование роли (w)', `description_role` AS  'description_role:Описание Роли (w)'
+FROM `roles`
+
+----------------------------
+
+CREATE VIEW `view_suppliers` AS
+SELECT `id` AS 'id:№ (i)', `name_supplier` AS 'name_supplier:Наименование (w)'
+FROM `suppliers`
+
+----------------------------
+CREATE VIEW `view_users` AS
+SELECT `id` AS 'id:№ (i)', `login` AS 'login:Логин (w)', `description_user` AS 'description_user:Описание (w)'
+FROM `users`
+
+-----------------------------
+CREATE VIEW view_scripts AS
+SELECT `id` AS 'id:№ (i)', `psevdoNameScript` AS 'psevdoNameScript:Описание скрипта (w)' `script` AS 'script:Скрипт (w)', 
+	   `id_supplier` AS 'id_supplier:Код поставщика'
+FROM `scripts`
+
+SELECT * FROM `view_scripts`
+WHERE `id_supplier:Код поставщика`='2'
+
+----------------------------
+
+CREATE VIEW `view_services` AS
+SELECT `services`.`id` AS `id:№ (i)`, `services`.`name_service` AS 'name_service:Услуга (w)', 
+	   `services`.`code_service` AS 'code_service: Внешний код сервиса (w)' ,
+	   `suppliers`.`name_supplier` AS 'id_supplier:Поставщик (l)', 
+	   `services`.`service_access` AS 'service_access:Доступ (c)'
+FROM `services`
+INNER JOIN `suppliers`
+ON `services`.`id_supplier` =  `suppliers`.`id`
+
+
+
+CREATE VIEW view_services AS
+SELECT services.id AS `id:№`, services.name_service AS 'name_service:Услуга' , suppliers.name_supplier AS 'name_supplier:Поставщик', 
+	   services.service_access AS 'service_access:Доступ', services.id_supplier
+FROM services, suppliers 
+WHERE services.id_supplier = suppliers.id
+
+----------------------------
+
+CREATE VIEW `view_dictionaries` AS	
+SELECT `dictionaries`.`id` AS 'id:№ (i)', `dictionaries`.`name_dictionary` AS 'name_dictionary:Наименование справочника (w)',
+	   `dictionaries`.`id_supplier` AS 'id_supplier:Поставщик'
+FROM `dictionaries`
+
+SELECT `view_dictionaries`.`id:№ (i)`, `view_dictionaries`.`name_dictionary:Наименование справочника (w)`
+FROM `view_dictionaries`
+WHERE `view_dictionaries`.`id_supplier:Поставщик`=''
+-----------------------------
+
+CREATE VIEW view_subServices AS
+SELECT id AS 'id:№', name_subService AS 'name_subService:Наименование', id_service FROM subServices
+
+----------------------------
+
+CREATE VIEW `view_typeobject` AS
+SELECT `typeObject`.`id` AS `id:№ (i)`, `listTypes`.`typeValue` AS 'id_listType:Тип (l)', 
+	   `typeObject`.`code` AS 'code:Код (w)', `typeObject`.`label` AS 'label:Описание (w)',
+	   `typeObject`.`require` AS 'require:Обязательность (c)', `typeObject`.`message` AS 'message:Сообщение (w)', 
+	   `typeObject`.`defaultValue` AS 'defaultValue:Значение по умолчанию (w)',
+	   `listPriorities`.`valuePriority` AS 'id_listPrioritie:Приоритет поля (l)', 
+	   `typeObject`.`id_supplier` AS 'id_supplier:Поставщик',`id_supplier`
+FROM `typeObject`
+INNER JOIN `listTypes`
+ON `typeObject`.`id_listType` = `listTypes`.`id`
+INNER JOIN `listPriorities`
+ON `typeObject`.`id_listPrioritie` = `listPriorities`.`id`
+
+
+
+-----------------------------
+
+CREATE VIEW `view_contentDictionaries` AS														   
+SELECT `id` AS 'id:№ (i)',`code_param` AS 'code_param:Код (w)', `value_param` AS 'value_param:Значение (w)',
+		`id_dictionarie` AS 'id_dictionarie:Справочник'
+FROM `contentDictionaries`		
+													 
+
+SELECT `id:№ (i)`,`code_param:Код (w)`, `value_param:Значение (w)`,		
+FROM `view_contentdictionaries` WHERE `id_dictionarie:Справочник`=3
+
+-----------------------------
+CREATE VIEW `view_scriptsobject` AS
+SELECT `scriptsObject`.`id` AS 'id:№ (i)', `scripts`.`script` AS 'script:Скрипт (w)',
+	   `scripts`.`psevdoNameScript` AS `psevdoNameScript:Описание скрипта (w)`,
+	   `scriptsObject`.`id_typeObject` AS 'id_typeObject:Код объекта'
+FROM `scriptsObject`,`scripts`
+WHERE `scriptsObject`.`id_script` = `scripts`.`id` 
+ 
+SELECT `view_scriptsobject`.`id:№ (i)`, `view_scriptsobject`.`id_script:Скрипт (l)`
+FROM `view_scriptsobject`
+WHERE `view_scriptsobject`.`id_typeObject:Код объекта`=''
+ 
+-----------------------------
+CREATE  VIEW `view_contentsubservices` AS
+SELECT `contentSubServices`.`id` AS `id:№ (i)`, `listTypes`.`typeValue` AS 'id_listType:Тип (l)', 
+	   `typeObject`.`code` AS 'code:Код (w)', `typeObject`.`label` AS 'label:Описание (w)',
+	   `typeObject`.`require` AS 'require:Обязательность (c)', `typeObject`.`message` AS 'message:Сообщение (w)', 
+	   `typeObject`.`defaultValue` AS 'defaultValue:Значение по умолчанию (w)', 
+	   `listPriorities`.`valuePriority` AS 'id_listPrioritie:Приоритет элемента (l)',
+	   `typeObject`.`id_supplier` AS 'id_supplier:Поставщик',
+	   `contentSubServices`.`id_subService` AS 'id_subService:Код подуслуги'
+	    FROM `contentSubServices`
+		INNER JOIN `subServices`
+		ON `contentSubServices`.`id_subService` = `subServices`.`id`
+		INNER JOIN `typeObject`
+		ON `contentSubServices`.`id_typeObject` = `typeObject`.`id`
+		INNER JOIN `listTypes`
+		ON `typeObject`.`id_listType` = `listTypes`.`id`
+		INNER JOIN `listPriorities`
+		ON `typeObject`.`id_listPrioritie` = `listPriorities`.`id`;
+
+SELECT	`view_contentsubservices`.`id:№ (i)`, `view_contentsubservices`.`id_listType:Тип (l)`, 
+	   `view_contentsubservices`.`code:Код (w)`, `view_contentsubservices`.`label:Описание (w)`,
+	   `view_contentsubservices`.`require:Обязательность (w)`, `view_contentsubservices`.`message:Сообщение (w)`, 
+	   `view_contentsubservices`.`defaultValue:Значение по умолчанию (w)`
+FROM `view_contentsubservices`
+WHERE  	`view_contentsubservices`.`id_subService:Код подуслуги` = ''   
+		
+-----------------------------
+
+INSERT=================
+
+-----------------------------
+
+INSERT `profileAccess`(`id_role`,`id_user`,`id_supplier`,`password`,`profile_access`)
+VALUES ()
+
+-----------------------------
+
+INSERT INTO `commissionServices`(`id_commission`,`id_terminal`,`id_service`)
+SELECT '5', `terminals`.`id`, '36' 
+FROM `terminals`
+
+
+-----------------------------
+
+INSERT `terminals`(`code_terminal`)
+VALUES('')
+-----------------------------
+
+INSERT `contentDictionaries` (`id_dictionarie`, `code_param`, `value_param`)
+VALUES('','','')
+-----------------------------
+
+INSERT `scriptsObject` (`id_script`,`id_typeObject`)
+VALUES('','')
+
+-----------------------------
+
+INSERT `service`(`id_supplier`, `name_service`, `code_service`, `service_access`)
+VALUES ('','','','')
+
+
+-----------------------------
+INSERT INTO `commissionServices`(`id_commission`,`id_terminal`,`id_service`, `id_subService`)" +
+	                						   "SELECT '" + map.get("id_commission") + "', `terminals`.`id`, '" + map.get("id_service") + "', ''" +
+	                						   "FROM `terminals`"
+
+
+SELECT=================
+
+
+-----------------------
+
+"SELECT `profileAccess`.`id`, `roles`.`code_role`, `roles`.`description_role`, " +
+			   "`users`.`description_user`, `profileAccess`.`id_supplier` " + 
+			   "FROM `profileAccess`, `roles`, `users` " + 
+			   "WHERE `profileAccess`.`id_role` = `roles`.`id` " +
+			   "AND `profileAccess`.`id_user` = `users`.`id` " +
+			   "AND `profileAccess`.`id_user` = (" +
+			   									"SELECT `users`.`id` " +
+			   									"FROM `users` " +
+			   									"WHERE `users`.`login` = '" + map.get("login") + "')" +
+			   "AND `profileAccess`.`password` = '" + map.get("password") + "'" +
+			   "AND `profileAccess`.`profile_access` = 1";
+
+			   
+SELECT `profileAccess`.`id`, `roles`.`code_role`, `roles`.`description_role`,
+	   `users`.`description_user`, `profileAccess`.`id_supplier`
+FROM `profileAccess`
+INNER JOIN `roles`
+ON	`profileAccess`.`id_role` = `roles`.`id`
+INNER JOIN `users`
+ON  `profileAccess`.`id_user` = `users`.`id`
+WHERE `users`.`login` = ''
+AND `profileAccess`.`password` = ''
+AND `profileAccess`.`profile_access` = 1
+-----------------------
+											   
+											   
+UPDATE=================
+
+
+----------------------------
+
+UPDATE `profileAccess` SET `id_role` = '', `id_user` = '', `id_supplier` = '',
+						   `password` = '',`profile_access` =''
+WHERE `id` = 						   
+----------------------------
+										   
+UPDATE `commissionServices` SET `id_commission` = '' WHERE 											   
+----------------------------
+
+UPDATE `contentDictionaries` SET `code_param`='', `value_param`=''
+WHERE `id`=''
+
+----------------------------
+
+UPDATE `services` SET `id_supplier` = '', `name_service` = '', 
+					  `code_service` = '', `service_access` = ''
+WHERE `id`=''
+----------------------------
+
+UPATE `contentSubServices` SET `id_listPrioritie` = ''
+WHERE `id`=''
+----------------------------
+SELECT * FROM `services`,`typeObject`
+WHERE `services`.`id_supplier`=`typeObject`.`id_supplier` 
+AND `services`.`id_supplier`='1'
+AND `typeObject`.`id_supplier`='1'
+
+
+select * from `subServices` WHERE `id`='1'
+
+select * from `contentSubServices` WHERE `id_subService`='1'
+
+
+
+
+SELECT `view_typeobject`.`id:№`, `view_typeobject`.`type:Тип`, `view_typeobject`.`code:Код`, 
+	   `view_typeobject`.`label:Описание`, `view_typeobject`.`require:Обzзятельность`,
+	   `view_typeobject`.`message:Сообщение`, `view_typeobject`.`defaultValue:Значение по умолчанию`
+FROM `view_typeobject` 
+WHERE `view_typeobject`.`id_supplier`=(SELECT `profileAccess`.`id_supplier` FROM `profileAccess` 
+									 WHERE `id_user`=(SELECT `users`.`id` FROM `users` WHERE `users`.`login`='ibm'))
+									 
+									 
+									 
+CREATE VIEW `view_commissionServices` AS									 
+SELECT DISTINCT `commissionServices`.`id` AS 'id:№', `services`.`code_service` AS 'code_service:Внешний код услуги',
+	   `commissionServices`.`id_subService` AS 'id_subService: Внутренний № подуслуги',
+	   `terminals`.`code_terminal` AS 'code_terminal:Код терминала',
+	   `commissions`.`scriptCommission` AS 'scriptCommission:Скприт расчета комиссии'
+FROM `commissionServices`, `services`, `subServices`, `terminals`, `commissions`	   
+WHERE `commissionServices`.`id_commission`=`commissions`.`id`
+AND `commissionServices`.`id_terminal`=`terminals`.`id`
+AND `commissionServices`.`id_service`=`services`.`id`
+
+SELECT DICTINCT`commissionServices`.`id` AS 'id:№', `services`.`code_service` AS 'code_service:Внешний код услуги',
+	   `commissionServices`.`id_subService` AS 'id_subService: Внутренний № подуслуги',
+	   `terminals`.`code_terminal` AS 'code_terminal:Код терминала',
+	   `commissions`.`scriptCommission` AS 'scriptCommission:Скприт расчета комиссии'
+FROM `commissionServices`, `services`, `subServices`, `terminals`, `commissions`	   
+WHERE `commissionServices`.`id_commission`=`commissions`.`id`
+AND `commissionServices`.`id_terminal`=`terminals`.`id`
+AND `commissionServices`.`id_service`=`services`.`id`
+
+
+
+			    	return "SELECT `view_typeobject`.`id:№`, `view_typeobject`.`id_type:Тип`, `view_typeobject`.`code:Код`," +
+			    				  "`view_typeobject`.`label:Описание`, `view_typeobject`.`require:Обzзятельность`," +
+			    				  "`view_typeobject`.`message:Сообщение`, `view_typeobject`.`defaultValue:Значение по умолчанию`" +
+			    			"FROM `view_typeobject`" +
+			    			"WHERE `view_typeobject`.`id_supplier`=(SELECT `profileAccess`.`id_supplier` " +
+			    												   "FROM `profileAccess`" +
+			    												   "WHERE `id_user`=(SELECT `users`.`id` " +
+			    												   					"FROM `users` " +
+			    												   					"WHERE `users`.`login`='" + Activity.map.get("login") +"'))";
+
+																					
+SELECT `dictionaries`.`id` AS '№', `dictionaries`.`name_dictionary` AS 'name_dictionary:Наименование справочника'
+FROM `dictionaries`
+WHERE `dictionaries`.`id_supplier` = (SELECT `profileAccess`.`id_supplier`
+			    					  FROM `profileAccess`
+			    					  WHERE `id_user`=(SELECT `users`.`id`
+													   FROM `users`
+			    									   WHERE `users`.`login`='ibm'))
+
+
+SELECT `view_dictionaries`.`id:№`, `view_dictionaries`.`name_dictionary:Наименование справочника`
+FROM `view_dictionaries`
+WHERE `view_dictionaries`.`id_supplier` = (SELECT `profileAccess`.`id_supplier`
+			    					  FROM `profileAccess`
+			    					  WHERE `id_user`=(SELECT `users`.`id`
+													   FROM `users`
+			    									   WHERE `users`.`login`='ibm'))
+
+													   
+													   
+	Edit	Delete	1	TEXT
+	Edit	Delete	2	INTEGER
+	Edit	Delete	3	DOUBLE
+	Edit	Delete	4	DATE
+	Edit	Delete	5	LIST
+	Edit	Delete	6	TRANSPORT_CARD
+	Edit	Delete	7	SUBSERVICE													   
+													   
+													   
+
+													 
+
+SELECT * FROM `view_services`													 
+													 
+													 
+		
+		SELECT `id`, `name_service` FROM `services`
+		WHERE `id_supplier`=(SELECT `profileAccess`.`id_supplier`
+			    					  FROM `profileAccess`
+			    					  WHERE `id_user`=(SELECT `users`.`id`
+													   FROM `users`
+			    									   WHERE `users`.`login`='ibm'))
+		
+CREATE VIEW `view_scripts` AS														   		
+		SELECT `id` AS 'id:№', `id_typeObject` AS 'id_typeObject:Код объекта', `script` AS 'script:Скрипт'
+		FROM `scripts` 
+		
+														
+		SELECT 	id:№`, `id_typeObject:Код объекта`, `script:Скрипт`
+		FROM `view_scripts`
+		WHERE `id_typeObject:Код объекта` = 1
+		
+		
+		SELECT `id:№`, `script:Скрипт`
+		FROM  `view_scripts` 
+		WHERE `id_typeObject:Код объекта` = 1
+		
+
+		
+		
+SELECT `typeObject`.`id` AS `id:№`, `typeObject`.`id_listType` AS 'id_listType:Тип', 
+	   `typeObject`.`code` AS 'code:Код', `typeObject`.`label` AS 'label:Описание',
+	   `typeObject`.`require` AS 'require:Обязательность', `typeObject`.`message` AS 'message:Сообщение', 
+	   `typeObject`.`defaultValue` AS 'defaultValue:Значение по умолчанию', `typeObject`.`id_supplier` AS 'id_supplier:Поставщик',
+	   `contentSubServices`.`id_subService`
+	    FROM `typeObject`, `contentSubServices`, `subServices`
+		WHERE `contentSubServices`.`id_subService` = `subServices`.`id`
+		AND `contentSubServices`.`id_typeObject` = `typeObject`.`id`
+		AND `contentSubServices`.`id_subService` = '4'
+
+		
+		
+SELECT `contentSubServices`.`id` AS `id:№ (i)`, `listTypes`.`typeValue` AS 'id_listType:Тип (l)', 
+	   `typeObject`.`code` AS 'code:Код (w)', `typeObject`.`label` AS 'label:Описание (w)',
+	   `typeObject`.`require` AS 'require:Обязательность (w)', `typeObject`.`message` AS 'message:Сообщение (w)', 
+	   `typeObject`.`defaultValue` AS 'defaultValue:Значение по умолчанию (w)', `typeObject`.`id_supplier` AS 'id_supplier:Поставщик ',
+	   `contentSubServices`.`id_subService` AS 'id_subService:Код подуслуги'
+	    FROM `typeObject`, `contentSubServices`, `subServices`, `listTypes`
+		WHERE `contentSubServices`.`id_subService` = `subServices`.`id`
+		AND `contentSubServices`.`id_typeObject` = `typeObject`.`id`
+		AND `typeObject`.`id_listType` = `listTypes`.`id`
+
+		
+CREATE VIEW `view_contentSubServices` AS
+SELECT `contentSubServices`.`id` AS `id:№`, `typeObject`.`id_listType` AS 'id_listType:Тип', 
+	   `typeObject`.`code` AS 'code:Код', `typeObject`.`label` AS 'label:Описание',
+	   `typeObject`.`require` AS 'require:Обязательность', `typeObject`.`message` AS 'message:Сообщение', 
+	   `typeObject`.`defaultValue` AS 'defaultValue:Значение по умолчанию', `typeObject`,
+	   `contentSubServices`.`id_subService`
+	    FROM `typeObject`, `contentSubServices`, `subServices`
+		WHERE `contentSubServices`.`id_subService` = `subServices`.`id`
+		AND `contentSubServices`.`id_typeObject` = `typeObject`.`id`	
+
+
+SELECT `id:№`, `id_listType:Тип`, 
+	   `code:Код`, `label:Описание`,
+	   `require:Обязательность`, `message:Сообщение`, 
+	   `defaultValue:Значение по умолчанию`
+FROM `view_contentSubServices`
+WHERE  id_subService = '4'
+
+
+SELECT DISTINCT `view_typeobject`.`code:Код`, `view_typeobject`.`label:Описание` FROM `view_typeobject`
+WHERE `view_typeobject`.`id_supplier` = 2
+
+ SELECT `id` FROM `typeObject` WHERE `code` = 'number' 
+													 
+INSERT  `contentSubServices` (`id_subService`, `id_typeObject`) VALUES ('2', (SELECT `id` FROM `typeObject` WHERE `code` = 'number'))	
+
+
+
+UPDATE `typeObject` SET `id_listType`=(SELECT `id` 
+									   FROM `listTypes` 
+									   WHERE `typeValue`='INTEGER'),
+						`code`='ttt2', `label`='ttt2', `require`='1', 
+						`message`='ttt2', `defaultValue`='ttt2'
+WHERE `id`='15'						
+
+
+UPDATE `dictionaries` SET `name_dictionary`='testDic2' WHERE `id`='4'
+													 
+UPDATE `suppliers` SET `name_supplier`='12344' WHERE `id`='6'					
+
+UPDATE `roles` SET `code_role`='', description_role='' WHERE `id`=''								 
+
+UPDATE `commissions` SET `scriptCommission`='' WHERE `id`=''				
+
+
+
+									 
+==============================ДЛЯ СЕРВИСА ТЕРМИНАЛА
+
+--------выборка подуслуг
+
+SELECT `subServices`.`id`, `subServices`.`name_subService` FROM `subServices` 
+WHERE `subServices`.`id_service`=(SELECT `id` FROM `services` WHERE `code_service`='G5016')
+
+-----выборка идентификаторов элементов относящихся к услуге/подуслуге
+
+ если  услуга содержит процедуры ПЕРВЫЙ ЗАПРОС ВЕРНУЛ НЕ 0
+SELECT `contentSubServices`.`id_typeObject` 
+FROM `contentSubServices` 
+WHERE `contentSubServices`.`id_subService`='1'
+
+если  услуга НЕ содержит процедуры ПЕРВЫЙ ЗАПРОС ВЕРНУЛ 0
+
+SELECT `contentSubServices`.`id_typeObject` 
+FROM `contentSubServices` 
+WHERE `contentSubServices`.`id_service`=(SELECT `services`.`id` FROM `services` WHERE `services`.`code_service`='G5016')
+
+
+------выборка элементов формы по всем подуслугам
+
+SELECT `typeObject`.`id`, `typeObject`.`code`, `typeObject`.`label`, `typeObject`.`require`,
+	   `typeObject`.`type`, `typeObject`.`message`, `typeObject`.`defaultValue` 
+FROM `typeObject`, `contentSubServices`, `subServices`
+WHERE `contentSubServices`.`id_subService`='1'
+AND `contentSubServices`.`id_subService`=`subServices`.`id`
+AND `contentSubServices`.`id_typeObject`=`typeObject`.`id`
+
+-----выборка элементов по услуге
+
+SELECT `typeObject`.`id`, `typeObject`.`code`, `typeObject`.`label`, `typeObject`.`require`,
+	   `typeObject`.`type`, `typeObject`.`message`, `typeObject`.`defaultValue` 
+FROM `typeObject`, `contentSubServices`, `services`
+WHERE `contentSubServices`.`id_service`=(SELECT `services`.`id` FROM `services` WHERE `services`.`code_service`='G5016')
+AND `contentSubServices`.`id_service`=`services`.`id`
+AND `contentSubServices`.`id_typeObject`=`typeObject`.`id`
+
+
+OLD----
+SELECT `typeObject`.`id`, `typeObject`.`code`, `typeObject`.`label`, 
+	   `typeObject`.`require`,`typeObject`.`type`, `typeObject`.`message`, 
+	   `typeObject`.`defaultValue` 
+FROM `typeObject`, `contentSubServices`, `services` 
+WHERE `contentSubServices`.`id_service`=(SELECT `services`.`id` 
+										 FROM `services` 
+										 WHERE `services`.`code_service`='G5016')
+AND `contentSubServices`.`id_service`=`services`.`id` 
+AND `contentSubServices`.`id_typeObject`=`typeObject`.`id`
+
+NEW----
+SELECT `typeObject`.`id`, `typeObject`.`code`, `typeObject`.`label`, 
+	   `typeObject`.`require`,`typeObject`.`id_listType`, `typeObject`.`message`, 
+	   `typeObject`.`defaultValue` 
+FROM `contentSubServices`
+INNER JOIN `typeObject`
+ON `contentSubServices`.`id_typeObject` =`typeObject`.`id`
+INNER JOIN `services`
+ON `contentSubServices`.`id_service` = `services`.`id`
+WHERE `services`.`code_service`='G5016'
+
+
+INNER JOIN `subServices`
+ON `contentSubServices`.`id_subService` = `subServices`.`id`
+
+--- получение справочника по услуге
+SELECT `code_param`, `value_param` FROM `dictionary`
+WHERE `id_service` = (SELECT `services`.`id` FROM `services` WHERE `services`.`code_service`='G5016')
+
+
+NEW-----
+
+
+SELECT `code_param`, `value_param`
+FROM `contentDictionaries`
+INNER JOIN `dictionaries`
+ON `contentDictionaries`.`id_dictionarie` = `dictionaries`.`id`
+WHERE `dictionaries`.`name_dictionary` = 'readers'
+
+
+---- получение справочников по процедурам
+
+SELECT `code_param`, `value_param` FROM `dictionary`
+WHERE `id_subService` = '1';
+
+
+------------- получени коммисии по услуге
+
+SELECT `id`, `scriptCommission` FROM `commissions`
+WHERE `id_terminal` = '680002ts'
+AND `id_service` = (SELECT `services`.`id` FROM `services` WHERE `services`.`code_service`='G5016')
+
+
+OLD-----
+SELECT `id`, `scriptCommission` 
+FROM `commissions` 
+WHERE `id_terminal` = '680002ts'
+AND `id_service` = (SELECT `services`.`id` 
+					FROM `services` 
+					WHERE `services`.`code_service`='G5016')
+					
+NEW
+
+SELECT `commissions`.`id`, `commissions`.`scriptCommission`
+FROM `commissions`
+INNER JOIN `commissionServices`
+ON `commissionServices`.`id_commission` = `commissions`.`id`
+INNER JOIN `terminals`
+ON 	`commissionServices`.`id_terminal` = `terminals`.`id`
+INNER JOIN `services`
+ON 	`commissionServices`.`id_service` = `services`.`id`	
+WHERE `terminals`.`code_terminal` = '680002ts'			
+AND `services`.`code_service` = 'G5016'
+
+
+DROP TABLE commissions, commissionServices, contentDictionaries, contentSubServices, dictionaries, listTypes, profileAccess, scriptsObject;
+DROP TABLE roles, scripts, services, subServices, suppliers, terminals, typeObject, users;
+DROP VIEW view_commissionservices, view_subservices, view_suppliers, view_typeobject, view_users;
+DROP VIEW view_contentdictionaries, view_contentsubservices, view_dictionaries, view_roles, view_scripts, view_services;
+DROP VIEW view_commissions, view_scriptsobject, view_terminals;
+
+
+
+
+
+SELECT `view_scriptsobject`.`id:№ (i)`, 
+	   `view_scriptsobject`.`id_script:Скрипт (l)`
+FROM `view_scriptsobject`
+WHERE `view_scriptsobject`.`id:№ (i)` = ''
+
+
+
+SELECT `view_services`.`id:№ (i)`, `view_services`.`name_service:Услуга (w)` FROM `view_services`
+INNER JOIN `view_suppliers`
+ON `view_services`.`id_supplier:Поставщик (l)` = `view_suppliers`.`name_supplier:Наименование (w)`
+AND `view_suppliers`.`id:№ (i)` = '2'
+
+
+
+SELECT `id` AS 'id:№ (i)', `name_supplier` AS 'name_supplier:Наименование (w)'
+FROM `suppliers`
+
+
+
+
+
+SELECT `typeObject`.`id`, `typeObject`.`code`, `typeObject`.`label`, 
+		`typeObject`.`require`,`typeObject`.`id_listType`, `typeObject`.`message`, `typeObject`.`defaultValue`
+FROM `typeObject`, `contentSubServices`, `subServices`
+WHERE `contentSubServices`.`id_subService`='4'
+AND `contentSubServices`.`id_subService`=`subServices`.`id`
+AND `contentSubServices`.`id_typeObject`=`typeObject`.`id`
+
+
+UPDATE `typeObject` SET `id_listType`='1',`code`='testElement', `label`='testElement', `require`='null', `message`='Тестовое сообщение превышающее длину в 25', `defaultValue`='testElement'WHERE `id`='17'
+
+INSERT `typeObject` (`id_listType`,`code`,`label`,`require`,`message`,`defaultValue`,`id_supplier`) 
+SELECT  '1', 'testNew', 'testNoew','1','','','2');
+
+
+ALTER TABLE `commissions` ADD descriptionCommission VARCHAR(50) NULL;
+
+ALTER TABLE `scriptsObject` MODIFY `id_script` FOREIGN KEY (id_script) `scripts` (id) ON DELETE RESTRICT;
+
+ALTER TABLE `commissionServices` MODIFY `id_service` VARCHAR(11) 
+
+
+
+DELETE FROM `commissionServices` WHERE id_service NOT IN (33,34,35);
+DELETE FROM `contentDictionaries` WHERE id_dictionarie NOT IN (1,2,3,6,11,30);
+DELETE FROM `contentSubServices` WHERE id_typeObject NOT IN (2,4,7,8,17);
+DELETE FROM `subServices` WHERE id_service NOT IN (33,34,35);
+
+
+ALTER TABLE `typeObject` ADD id_listType INT(11) NULL;
+====================================================
+
+ВВЕДЕИЕ внешних ключей в БД terminal
+====================================================
+
+========================
+------------------------
+commissionServices
+------------------------
+ALTER TABLE `commissionServices` ADD CONSTRAINT FOREIGN KEY (id_commission) REFERENCES `commissions`(id)
+ALTER TABLE `commissionServices` ADD CONSTRAINT FOREIGN KEY (id_terminal) REFERENCES `terminals`(id)
+ALTER TABLE `commissionServices` MODIFY `id_service` INT(11)
+ALTER TABLE `commissionServices` ADD CONSTRAINT FOREIGN KEY (id_service) REFERENCES `services`(id)
+UPDATE `commissionServices` SET `id_subService`= null WHERE id_subService NOT IN (4,5)
+ALTER TABLE `commissionServices` MODIFY `id_subService` INT(11)
+ALTER TABLE `commissionServices` ADD CONSTRAINT FOREIGN KEY (id_subService) REFERENCES `subServices`(id)
+----------------------
+
+----------------------
+contentDictionaries
+----------------------
+ALTER TABLE `contentDictionaries` ADD CONSTRAINT FOREIGN KEY (id_dictionarie) REFERENCES `dictionaries`(id)
+----------------------
+
+----------------------
+contentSubServices
+----------------------
+ALTER TABLE `contentSubServices` ADD CONSTRAINT FOREIGN KEY (id_typeObject) REFERENCES `typeObject`(id)
+ALTER TABLE `contentSubServices` MODIFY `id_service` INT(11)
+ALTER TABLE `contentSubServices` ADD CONSTRAINT FOREIGN KEY (id_service) REFERENCES `services`(id)
+ALTER TABLE `contentSubServices` MODIFY `id_subService` INT(11)
+UPDATE `contentSubServices` SET `id_subService`= null WHERE id_subService =0
+ALTER TABLE `contentSubServices` ADD CONSTRAINT FOREIGN KEY (id_subService) REFERENCES `subServices`(id)
+----------------------
+
+----------------------
+dictionaries
+----------------------
+ALTER TABLE `dictionaries` ADD CONSTRAINT FOREIGN KEY (id_supplier) REFERENCES `suppliers`(id)
+----------------------
+
+----------------------
+profileAccess
+----------------------
+ALTER TABLE `profileAccess` ADD CONSTRAINT FOREIGN KEY (id_role) REFERENCES `roles`(id)
+ALTER TABLE `profileAccess` ADD CONSTRAINT FOREIGN KEY (id_user) REFERENCES `users`(id)
+ALTER TABLE `profileAccess` ADD CONSTRAINT FOREIGN KEY (id_supplier) REFERENCES `suppliers`(id)
+----------------------
+
+----------------------
+scripts
+----------------------
+ALTER TABLE `scripts` ADD CONSTRAINT FOREIGN KEY (id_supplier) REFERENCES `suppliers`(id)
+----------------------
+
+---------------------
+scriptsObject
+---------------------
+ALTER TABLE `scriptsObject` ADD CONSTRAINT FOREIGN KEY (id_script) REFERENCES `scripts`(id)
+ALTER TABLE `scriptsObject` ADD CONSTRAINT FOREIGN KEY (id_typeObject) REFERENCES `typeObject`(id)
+---------------------
+
+---------------------
+services
+---------------------
+ALTER TABLE `services` ADD CONSTRAINT FOREIGN KEY (id_supplier) REFERENCES `suppliers`(id)
+---------------------
+
+---------------------
+subServices
+---------------------
+ALTER TABLE `subServices` ADD CONSTRAINT FOREIGN KEY (id_service) REFERENCES `services`(id)
+---------------------
+
+---------------------
+typeObject
+---------------------
+
+ALTER TABLE `typeObject` MODIFY `id_supplier` INT(11) NOT NULL
+ALTER TABLE `typeObject` ADD CONSTRAINT FOREIGN KEY (id_supplier) REFERENCES `suppliers`(id)	
+
+DROP TABLE `listTypes`;
+CREATE TABLE IF NOT EXISTS `listTypes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `typeValue` varchar(25) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `listTypes` (`id`, `typeValue`) VALUES
+	(1, 'TEXT'),
+	(2, 'INTEGER'),
+	(3, 'DOUBLE'),
+	(4, 'DATE'),
+	(5, 'LIST'),
+	(6, 'TRANSPORT_CARD'),
+	(7, 'SUBSERVICE');
+
+ALTER TABLE `typeObject` MODIFY `id_listType` INT(11) NOT NULL;
+ALTER TABLE `typeObject` ADD CONSTRAINT FOREIGN KEY (id_listType) REFERENCES `listTypes`(id);
+---------------------
+
+ ================================================================================================================================
+ Запросы модифицирующие БД с привязкой к датам
+ ================================================================================================================================
+  15.11.18
+ =========
+ ALTER TABLE  `contentSubServices` ADD  `defaultValue` VARCHAR( 500 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER  `id_listPrioritie`;
+ ================================================================================================================================
+  15.11.19
+ ========
+ backup view_contentsubservices, view_terminals от 15.04.15
+
+CREATE VIEW `view_contentsubservices` AS 
+SELECT `contentSubServices`.`id` AS `id:№ (i)`,`listTypes`.`typeValue` AS `id_listType:Тип (l)`,
+	   `typeObject`.`code` AS `code:Код (w)`,`typeObject`.`external_code_field` AS `external_code_field: Код в системе поставщика(w)`,
+	   `typeObject`.`label` AS `label:Описание (w)`,`typeObject`.`require` AS `require:Обязательность (c)`,
+	   `typeObject`.`message` AS `message:Сообщение (w)`,`typeObject`.`defaultValue` AS `defaultValue:Значение по умолчанию (w)`,
+	   `listPriorities`.`valuePriority` AS `id_listPrioritie:Приоритет элемента (l)`,`typeObject`.`id_supplier` AS `id_supplier:Поставщик`,
+	   `contentSubServices`.`id_subService` AS `id_subService:Код подуслуги` 
+FROM ((((`contentSubServices` join `subServices` on((`contentSubServices`.`id_subService` = `subServices`.`id`))) join `typeObject` on((`contentSubServices`.`id_typeObject` = `typeObject`.`id`))) join `listTypes` on((`typeObject`.`id_listType` = `listTypes`.`id`))) join `listPriorities` on((`contentSubServices`.`id_listPrioritie` = `listPriorities`.`id`)));
+
+CREATE VIEW `view_terminals` AS 
+SELECT `terminals`.`id` AS `id:№ (i)`,`terminals`.`code_terminal` AS `code_terminal:Внешний код терминала (w)` 
+FROM `terminals`;
+------------------------------------------------
+ 
+ ALTER TABLE  `terminals` ADD  `location` VARCHAR( 500 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER  `code_terminal`;
+ ================================================================================================================================
+ 
+ 16.02.24
+ =========
+ 
+ ---------
+ for admin
+ 
+ SELECT `id`, `className` FROM `classServices`
+ 
+ ---------
+ for supplier
+ 
+SELECT `classServices`.`id`, `classServices`.`className`
+FROM `classServices` INNER JOIN `services`
+ON `classServices`.`id_service` = `services`.`id`
+WHERE `services`.`id` IN (SELECT `id` FROM `services` WHERE `id_supplier`=(String)id_supplier
+ 
+  ---------
+  
+  
