@@ -44,23 +44,24 @@ public class Activity extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Версия - дата последних изменений в формете yy.MM.dd
-	 * 
-	 * ВАЖНО! Проект очищен от закомментированного кода старых реализаций
+	 * Версия - дата последних изменений в формете yy.MM.dd	 * 
 	 */
-	public static final String VERSION ="16.02.11";
+	public static final String VERSION ="16.03.21";
 	/**
-	 * Системный конфигурационный файл, создается автоматически при старте сервлдета, если отсутствует
+	 * Системный конфигурационный файл.
+	 * Автоматически создается при старте сервлдета, если отсутствует
 	 */
 	public static final String SYSTEM_CONFIG = "systemConfig.properties";	
 	
 	/**
-	 * Замена buffMap используется в doPost и doGet для приема запросов
+	 * Хранение данные запросов
 	 */
 	private Map<String, Object> inputData = null;
 
 	/**
-	 * Массив процессов. Наполняется в зависимости от количества открытых сессий
+	 * Раочие соединения.
+	 * Новое объект добавляется при создании новой сесиии 
+	 * Автоматическое удалеие объектов при бейзействии пользователев течении 300 секунд
 	 */
 	public static BufferProcess bufferProcess = null;
 

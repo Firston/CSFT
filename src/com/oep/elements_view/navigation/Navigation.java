@@ -1,6 +1,5 @@
 package com.oep.elements_view.navigation;
 
-import java.awt.Menu;
 import java.util.Arrays;
 import java.util.List;
 
@@ -82,7 +81,8 @@ public class Navigation{
 	 * version 15.11.26
 	 * @return
 	 */
-	public  static String getVerticalMenu(){		
+	public  static synchronized String getVerticalMenu(){
+		instance.isVisibleSubMenu = false;
 		/**
 		 * при наведении проставляет параметр выбора таблицы
 		 */		
@@ -363,7 +363,8 @@ public class Navigation{
 			    case COMMISSIONS : 
 			    case TYPEOBJECT :
 			    case LISTGROUPOBJECTS :	
-			    case LISTPRIORITIES : {
+			    case LISTPRIORITIES :
+			    case LISTCLASSSERVICE : {
 			      return "createFormShow(this.id, null, '" + ProcessForeground.map.get("table") + "'), removeMessage()";
 			    }
 			    default : {

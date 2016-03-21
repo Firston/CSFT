@@ -74,16 +74,16 @@ public class ProcessForeground extends ResultSQL implements Foreground{
 			   * Устаревшая реализация. На этапе оптимизации.
 			   * Оставлена для отслеживания добавления записей по старой логике
 			   */
-			  Logger.out("INSERT CRITICAL", map) ;
+			Logger.out("INSERT CRITICAL", map) ;
+			sql = SQLFactory.getInstance().create(map.get("typeEvent").toString());
 			if(map.get("elementContent").toString().equals("tree")){
 				try {
-					throw new Exception("Critical ERROR INSERT- Функционал реализован по старой логике.");
+					throw new Exception("Critical ERROR INSERT- Функционал реализован по старой логике." + sql.getQuery(map));
 				} catch (Exception e) {
 					Logger.addLog("Critical ERROR INSERT - Функционал реализован по старой логике. Обратитесь к разработчику \r\n " + e.getMessage() );
 					e.printStackTrace();					
 				}finally{
-					Logger.out("INSERT AROND FOPOST", map);
-					sql = SQLFactory.getInstance().create(map.get("typeEvent").toString());
+					Logger.out("INSERT AROND FOPOST", map);					
 					getResultInsert(map);
 					map.put("typeEvent", "select");
 					sql = SQLFactory.getInstance().create(map.get("typeEvent").toString());
@@ -129,7 +129,7 @@ public class ProcessForeground extends ResultSQL implements Foreground{
 			  Logger.out("UPDATE CRITICAL", map) ;
 			if(map.get("elementContent").toString().equals("tree")){
 				try {
-					throw new Exception("Critical ERROR UPDATE - Функционал реализован по старой логике.");
+					throw new Exception("Critical ERROR UPDATE - Функционал реализован по старой логике." + sql.getQuery(map));
 				} catch (Exception e) {
 					Logger.addLog("Critical ERROR UPDATE - Функционал реализован по старой логике. Обратитесь к разработчику \r\n " + e.getMessage() );
 					e.printStackTrace();					

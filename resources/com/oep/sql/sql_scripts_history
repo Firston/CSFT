@@ -734,7 +734,7 @@ ALTER TABLE `typeObject` ADD CONSTRAINT FOREIGN KEY (id_listType) REFERENCES `li
  Запросы модифицирующие БД с привязкой к датам
  ================================================================================================================================
   15.11.18
- ========
+ =========
  ALTER TABLE  `contentSubServices` ADD  `defaultValue` VARCHAR( 500 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER  `id_listPrioritie`;
  ================================================================================================================================
   15.11.19
@@ -758,3 +758,22 @@ FROM `terminals`;
  ALTER TABLE  `terminals` ADD  `location` VARCHAR( 500 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER  `code_terminal`;
  ================================================================================================================================
  
+ 16.02.24
+ =========
+ 
+ ---------
+ for admin
+ 
+ SELECT `id`, `className` FROM `classServices`
+ 
+ ---------
+ for supplier
+ 
+SELECT `classServices`.`id`, `classServices`.`className`
+FROM `classServices` INNER JOIN `services`
+ON `classServices`.`id_service` = `services`.`id`
+WHERE `services`.`id` IN (SELECT `id` FROM `services` WHERE `id_supplier`=(String)id_supplier
+ 
+  ---------
+  
+  

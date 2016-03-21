@@ -16,7 +16,9 @@ var listTables = {
 		table_profileAccess : {value : '\'Права доступа\'', name : 'table_profileAccess', code : '14'},
 		table_listTypes : {value : '\'Типы элементов\'', name : 'table_listTypes', code : '15'},
 		table_contentGroupObjects : {value : '\'Группы объектов\'', name : 'table_contentGroupObjects', code : '16'},
-		table_listGroupObjects : {value : '\'Группы сортировки\'', name : 'table_listGroupObjects', code : '17'}
+		table_listGroupObjects : {value : '\'Группы сортировки\'', name : 'table_listGroupObjects', code : '17'},
+		table_listClassService : {value : '\'Модули\'', name : 'table_listClassService', code : '18'},
+		table_classServices : {value : '\'Связь модулей и услуг\'', name : 'table_classServices', code : '19'}
 		
 	};
 
@@ -35,6 +37,9 @@ var listTables = {
 	 * @param result
 	 */
 	function addRowInTable(tableName, result){
+		
+		if(result == undefined || result == null || result == '' ) return;			
+		
 		var table_body = document.getElementById('table_body_' + tableName);
 		var indexTR = table_body.getElementsByTagName('tr').length;
 		var newTR = table_body.insertRow(indexTR);
@@ -108,7 +113,13 @@ var listTables = {
         	  		break;
         	  	}
         	  	default : {
-        	  		newTD.innerHTML = '<span>' + (atrLine[1] == null || atrLine[1] == 'null' ? '' : atrLine[1]) + '</span>';
+        	  		if(atrLine[1] != null && atrLine[1] != 'null'){
+        	  			var len1 = atrLine[1].length;
+        	  			if(len1 > 10 && !atrLine[1].contains(' ')) 
+        	  				newTD.innerHTML = '<span>' + atrLine[1].replaceAll('.', '.\n') + '</span>';
+        	  			else newTD.innerHTML = '<span>' + atrLine[1] + '</span>';	        	  			
+        	  		}else newTD.innerHTML = '<span></span>';
+        	  		//newTD.innerHTML = '<span>' + (atrLine[1] == null || atrLine[1] == 'null' ? '' : atrLine[1]) + '</span>';
         	  		break;
         	  	}
         	  }
@@ -1189,11 +1200,17 @@ var listTables = {
 	        if (req.readyState == 4) {
 	           
 	            if(req.status == 200) {
+
 	            	process();
-	            	removeTRs(tableName);	            		            		
-	        		document.getElementById('numberPage_' + tableName).setAttribute('value', newNumberPage);  			        		
-	        		addRowInTable(tableName, req.responseText);
-	            }
+	            	if(req.responseText == ''){
+		              messageInfo("Вы находитесь на последней странице");
+		    		  removeMessage();
+	            	}else{
+	            	  removeTRs(tableName);	            		            		
+	        		  document.getElementById('numberPage_' + tableName).setAttribute('value', newNumberPage);  			        		
+	        		  addRowInTable(tableName, req.responseText);  		
+	            	}
+	              }
 	        }
 		 };
 		 process(); 
@@ -1339,7 +1356,9 @@ var listTables = {
 							newChild = document.createElement('input');
 							newChild.id = col.id;
 							newChild.name = col.id;
-							newChild.type = 'checkbox'; 
+							newChild.type = 'checkbox';
+							newChild.value = false;
+							newChild.setAttribute("onchange", "changeCheckBox(this)");
 							break;
 						}
 						case bufValue.contains('(l)') : {
@@ -1688,17 +1707,32 @@ var listTables = {
 					  break;
 				  }
 				  default : {
-					var isSend = true, valueFroInput;
+					var isSend = true, valueForInput;
 					switch(true){
 					  case atr[1] == 'typeObject' : {
-						  obj = document.getElementById('id_listGroupObjects');
-						  if(obj != undefined){
-							  if(obj['value'] == ''){
+						  
+						  switch(true){
+						  	case parentTable == 'contentGroupObjects' : {
+							  obj = document.getElementById('id_listGroupObjects');
+							  if(obj != undefined){
+							    if(obj['value'] == ''){
 								  isSend = false;
 								  messageInfo('Не выбрана группа!');
+								}
 							  }
-						  }
-						  idSelect = 'id_typeObject';
+							  idSelect = 'id_typeObject';
+							  valueForInput = 'contentGroupObjects_' +  + obj['value'];
+							  break;
+						  	}
+						  	case parentTable == 'contentSubServices':{
+						  	  idSelect = 'id_typeObject';
+						  	  break;
+						  	}
+						  	default: {
+						  	  alert('Функционал не реализован!');
+						  	  return;
+						  	}						  	
+						  }						  
 						  break;
 					  }
 					  case atr[1] == 'scripts' : {
@@ -1706,7 +1740,7 @@ var listTables = {
 						  if(value != null){
 							 idSelect = 'id_script';
 							 //elementId = value.split('_')[2];
-							 valueFroInput = 'scriptsObject_' + value.split('_')[2];
+							 valueForInput = 'scriptsObject_' + value.split('_')[2];
 						  }else{
 							isSend = false;
 							messageInfo('Не выбрано записи!', document.getElementById('formTable_' + parentTable));							  
@@ -1718,7 +1752,7 @@ var listTables = {
 						  if(value != null){
 							idSelect = 'id_listPrioritie';
 							//elementId = value.split('_')[2];
-							valueFroInput = 'contentSubServices_' + value.split('_')[2];
+							valueForInput = 'contentSubServices_' + value.split('_')[2];
 						  }else{
 							isSend = false;
 							messageInfo('Не выбрано записи!', document.getElementById('formTable_' + parentTable));							  
@@ -1740,6 +1774,17 @@ var listTables = {
 						  idSelect = 'id_listGroupObject';
 						  break;
 					  }
+					  case atr[1] == 'listClassService' : {
+							var value = document.getElementById(record).getAttribute('value');						
+							if(value != null){
+							  idSelect = 'id_classService';
+								elementId = value.split('_')[2];
+							}else{
+							  isSend = false;
+							  messageInfo('Не выбрано записи!', document.getElementById('formTable_' + parentTable));
+		 					} 
+							break;
+					  }
 					}
 					if(isSend){
 							var parentNode = document.getElementById('formTable_' + parentTable);
@@ -1748,7 +1793,7 @@ var listTables = {
 							newDiv.className = 'c_form_blok';
 							parentNode.parentNode.insertBefore(newDiv, parentNode);
 							createElement('p', newDiv, null, 'Доступные для добавления элементы');
-							if(valueFroInput != undefined) createElement('input', newDiv, null, 'hidden:' + valueFroInput);
+							if(valueForInput != undefined) createElement('input', newDiv, null, 'hidden:' + valueForInput);
 							createElement('select', newDiv, idSelect);
 							createElement('img', newDiv, 'trSave', '/CSFT/image/knopka.png');
 											
@@ -1774,8 +1819,8 @@ var listTables = {
 			    		 var data = "table=" + atr[1];
 			    		 data += "&typeEvent=dictionary";
 			    		 req.open('GET', '/CSFT/constructor?' + data, true); 
-			    		 req.send(null); 
-					}
+			    		 req.send(null); 	
+					}	
 		    		break;
 				  }
 				}		

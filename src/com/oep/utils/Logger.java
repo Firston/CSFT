@@ -14,44 +14,69 @@ import com.oep.process.data.Prop;
 import com.oep.servlet.Activity;
 
 /**
- * @version 0.3
- * Версия от 15.03.11
+ * @version 0.4
+ * Версия от 16.03.21
  * @author Anthony
  *
  */
 public class Logger {
 	
-	private static Logger instance;
+	private static Logger instance;	
+
+	/**
+	 * Директория расположения логов
+	 */
+	private static String directory;
+	/**
+	 * Текущий файл записи логов
+	 */
+	private final static String fileName = "currentLog_CSFT";	
+	/**
+	 * Тип файла логов
+	 */
+	private final static String txt = ".txt";
 	
+	/**
+	 * Путь до файла
+	 */
+	private String path;
+
+	/**
+	 * Статус логирования. 
+	 * По умолчанию true (включено) 
+	 */
+	private static boolean checkLog = true;
+
 	private File file = null;
 	private FileWriter fw = null;
-
-	private static String prePath = null; 
-	private String path = null;
-	private String oldPath = "oldLog_CSFT_";
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM EEE dd HH:mm:ss", Locale.ENGLISH);
-	private static boolean checkLog = true;
-		
+	
 	private Logger(){
 		if(new File(Activity.SYSTEM_CONFIG).exists()){
-			Object prePath = Prop.getPropValue(Activity.SYSTEM_CONFIG, "system_pathLog");			
-			if(prePath != null){				
-			  this.prePath = prePath.toString();
+
+			Object directory = Prop.getPropValue(Activity.SYSTEM_CONFIG, "system_pathLog");			
+			if(directory != null){				
+			  this.directory = directory.toString();
 			  checkLog = Boolean.valueOf(Prop.getPropValue("systemConfig.properties", "system_isLog"));
-			  path = getPath();
-			}else checkLog = false;	
+			  path  = getPath();
+			}else checkLog = false;
 		}		
 	}
 	
 	public static Logger getInstance(){
-		if(instance == null)
-			instance = new Logger();
+		
+		if(instance == null){
+			synchronized (Logger.class) {
+				if(instance == null){
+					instance = new Logger();
+				}
+			}
+		}			
 		return instance;
 	}
 	public static synchronized void init(){
 		getInstance();		
-	}
-	
+	}	
 	
 	public static boolean addLog(Object value){
 		if(value != null)
@@ -61,24 +86,26 @@ public class Logger {
 	
 	private  void newFile(){
 		
-	  if(new File(path).exists()){
-		file = new File(path);
+	  file = new File(path); 
+	  if(file.exists()){
 		if(file.length() >= 1000000){
-		  int i = 1;
-		  while(new File(prePath + oldPath + i +".txt").exists())
-		    i++;			
-		  file.renameTo(new File(oldPath + i + ".txt"));
+		  String oldPath = new StringBuffer().append(directory)
+			   								 .append(fileName)
+			   								 .append(new Date().getTime())
+			   								 .append(txt)
+			   								 .toString();
+		  System.out.println("Сохранение старого лога : " + file.renameTo(new File(oldPath)));
 		  file = new File(path);
 		}
 	  }else{
 		try {
-			new FileOutputStream(path).close();
+			new FileOutputStream(file).close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		file = new File(path);
+		file = new File(getPath());
 	  }
 	  file.setWritable(true);
 	}
@@ -140,12 +167,15 @@ public class Logger {
 	}
 	
 	public String getPath() {
-		return path == null ? prePath + "currentLog_CSFT.txt" : path; 
+		return path = new StringBuffer().append(directory)
+								 		.append(fileName)
+								 		.append(txt)
+								 		.toString(); 
 	}
 	
 	
-	public void setPath(String prePath) {
-		this.path = prePath + "currentLog_CSFT.txt";
+	public void setPath(String directory) {
+		this.path = directory + "currentLog_CSFT.txt";
 	}
 	
 	/*
@@ -160,5 +190,4 @@ public class Logger {
 			getInstance().addLog(name + "_out-");			
 		}
 	}
-	
 }

@@ -228,6 +228,16 @@ public enum ItemMenu {
 		public String image(){
 			return "tools.png";	
 		}
+	}, LISTCLASSSERVICE(29){
+		
+		@Override
+		public String description(){
+		    return "Модули";
+		}
+		@Override
+		public String image(){
+			return "moreInfo.png";	
+		}
 	};
 		
 	 private int value;

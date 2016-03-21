@@ -28,4 +28,11 @@ public interface SQL {
 	 * 
 	 */
 	public abstract String getStringCheckNull(Object value);
+	
+	/**
+	 * with version 16.02.24 
+	 * Возвращает новый обхект запроса
+	 * @return
+	 */
+	public abstract StringBuffer instanceQuery();
 }

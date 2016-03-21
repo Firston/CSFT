@@ -141,3 +141,22 @@ SELECT `services`.`id` AS `id:№ (i)`,`services`.`name_service` AS `name_servic
 FROM `services`
 INNER JOIN `suppliers` ON `services`.`id_supplier` = `suppliers`.`id` 
 LEFT JOIN `classServices` ON `services`.`id` = `classServices`.`id_service`;
+
+view_listClassService - 16.02.26  
+==================================================
+CREATE VIEW `view_listclassservice` AS 
+SELECT `id` AS `id:№ (i)`, `className` AS `className:Класс (w)`, `description` AS `description:Описание (w)`
+FROM `listClassService`;
+
+view_services - 16.02.26
+==================================================
+CREATE VIEW `view_services` AS 
+SELECT `services`.`id` AS `id:№ (i)`,`services`.`name_service` AS `name_service:Услуга (w)`,
+	   `services`.`code_service` AS `code_service: Внешний код сервиса (w)`,
+	   `suppliers`.`name_supplier` AS `id_supplier:Поставщик (l)`,
+	   `services`.`service_access` AS `service_access:Доступ (c)`, 
+	   `listClassService`.`className` AS `id_classService:Используемый модуль`
+FROM `services`
+INNER JOIN `suppliers` ON `services`.`id_supplier` = `suppliers`.`id` 
+LEFT JOIN `classServices` ON `services`.`id` = `classServices`.`id_service`
+LEFT JOIN `listClassService` ON `classServices`.`id_classService` = `listClassService`.`id`;

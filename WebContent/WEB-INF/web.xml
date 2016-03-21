@@ -14,12 +14,20 @@
     <param-value>root</param-value>
   </context-param>
   <context-param>
+  	<!--
+  		localhost : root
+  		0.30 : rjitcnhs,  
+  	-->
     <param-name>password</param-name>
-    <param-value>root</param-value>
+    <param-value>rjitcnhs,</param-value>
   </context-param>
   <context-param>
+  <!--
+  	jdbc:mysql://127.0.0.1/terminal
+  	jdbc:mysql://192.168.0.30/terminal 
+   -->
     <param-name>url</param-name>
-    <param-value>jdbc:mysql://127.0.0.1/terminal</param-value>
+    <param-value>jdbc:mysql://192.168.0.30/terminal</param-value>
   </context-param>
   <servlet>
     <description></description>

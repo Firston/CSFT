@@ -1,7 +1,8 @@
 package com.oep.db.sql;
 
-
-import java.util.Collections;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 import com.oep.dictionary.ListRoles;
@@ -14,9 +15,16 @@ import com.oep.utils.Validate;
 
 public class QuerySelect implements SQL{
 
+	/**
+	 * with version 16.02.24
+	 * Введен для уменьшения количества операций при формирвоании запросов к БД
+	 */
+	private StringBuffer sb;
+	
 	private Map<String, Object> map;
 	@Override
 	public synchronized String getQuery(Map<String, Object> map) {
+		
 		this.map = map;
 		
 		String table = map.get("table") != null ? map.get("table").toString().replace("table_", "") : null; 
@@ -44,6 +52,7 @@ public class QuerySelect implements SQL{
 			  	case USERS : 
 			  	case PROFILEACCESS : 
 			  	case TERMINALS :
+			  	case LISTCLASSSERVICE :
 			  	  return "SELECT * FROM `view_" + table.toLowerCase() + "` " + 
 			  	  								  add_system_arrayId(false) + 
 			  	  	    " ORDER BY `id:№ (i)` LIMIT 10 OFFSET " + addOFFSET() ;
@@ -217,15 +226,25 @@ public class QuerySelect implements SQL{
 			    	  return "SELECT `id:№ (i)`, `description_group:Наименование группы (w)`, `id_service:Услуга (l)` " +
 					   		 "FROM `view_listgroupobjects` " +
 					   		 "WHERE `id:№ (i)` IN (" + system_arrayId +") " +
-					   		 "ORDER BY `id:№ (i)`";
+					   		 "ORDER BY `id:№ (i)` LIMIT 10 OFFSET " + addOFFSET() ;
 			    	}else{
 						return "SELECT `id:№ (i)`, `description_group:Наименование группы (w)`, `id_service:Услуга (l)` " +
 						   "FROM `view_listgroupobjects` " +
 						   "WHERE `id_supplier` = " + getId(null) + 
-						   " ORDER BY `id:№ (i)`";
+						   " ORDER BY `id:№ (i)` LIMIT 10 OFFSET " + addOFFSET() ;
 			    	}									
 				}
-				case COMMISSIONSERVICESDEFAULT : {
+				case CLASSSERVICES : {
+					
+					if(map.containsKey("valueDefault")){
+						
+						return instanceQuery().append("SELECT * FROM classServices WHERE `id_service` =")
+											  .append(map.get("id_service"))
+											  .toString();
+						
+					}else{
+						Logger.addLog("НЕ РЕАЛИЗОВАН ДАННЫЙ ВИД ЗАПРОСА ДЛЯ CLASSSERVICES");
+					}
 					
 				}
 			  }
@@ -304,14 +323,20 @@ public class QuerySelect implements SQL{
 			  }
 			  case LISTGROUPOBJECTS : {
 				  
-				  return "SELECT `listGroupObjects`.`id`, `listGroupObjects`.`description_group`" +
-				  		 "FROM `listGroupObjects`" +
-				  		 "INNER JOIN `services`" +
-				  		 "ON `services`.`id`= `listGroupObjects`.`id_service`" +
-				  		 "WHERE `listGroupObjects`.`id_service` IN (SELECT `services`.`id`" +
-				  		 											"FROM `services`" +
+				  return "SELECT `listGroupObjects`.`id`, `listGroupObjects`.`description_group` " +
+				  		 "FROM `listGroupObjects` " +
+				  		 "INNER JOIN `services` " +
+				  		 "ON `services`.`id`= `listGroupObjects`.`id_service` " +
+				  		 "WHERE `listGroupObjects`.`id_service` IN (SELECT `services`.`id` " +
+				  		 											"FROM `services` " +
 				  		 											"WHERE `services`.`id_supplier` = '" + getId(null) + "')";
 			  }
+				case LISTCLASSSERVICE : {
+					    
+					    return instanceQuery().append("SELECT `id`, `className` FROM `listClassService`")
+					    					  .toString();
+
+				}
 			}
 			Logger.addLog("Error : Критерии запроса из DICTIONARY не удовлетворяют ни одному результату");
 			return null;
@@ -465,7 +490,7 @@ public class QuerySelect implements SQL{
 		ProcessForeground process = BufferProcess.getProcess(this.map.get("sessionId").toString());
 		if(ListRoles.getValue(process.getInfoWorkingPerson().get("code_role").toString()).equals(ListRoles.ADMIN))
 			return "";
-		return (String) (obj = obj != null ? obj.toString() : process.getInfoWorkingPerson().get("id_supplier").toString()); 
+		return (String) (obj = obj != null ? obj.toString() : (String)process.getInfoWorkingPerson().get("id_supplier")); 
 	}
 
 	/**
@@ -506,5 +531,18 @@ public class QuerySelect implements SQL{
 	public String getStringCheckNull(Object value) {
 		return null;
 	}
+
+
+	@Override
+	public StringBuffer instanceQuery() {		
+		
+		return sb = sb == null ? new StringBuffer() :  sb.delete(0, sb.length());
+	}
 	
+	
+	public static void main(String[] args) {
+	
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy MM dd HH:mm:ss", Locale.ENGLISH);
+		System.out.println(sdf.format(new Date()));
+	}
 }

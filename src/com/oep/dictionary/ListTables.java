@@ -176,6 +176,20 @@ public enum ListTables {
 		public String image(){
 			return "";
 		}
+	}, CLASSSERVICES(24){
+		public String description(){
+		    return "";
+		}
+		public String image(){
+			return "";
+		}
+	}, LISTCLASSSERVICE(25){
+		public String description(){
+		    return "";
+		}
+		public String image(){
+			return "";
+		}
 	};
 		
 	 private int value;
@@ -183,11 +197,13 @@ public enum ListTables {
 	 /*
 	  * реализует подгрузку русскоязычного описания таблиц
 	  */	 
+	 @Deprecated
 	 public abstract String description();
 	 
 	 /*
 	  * реализует подгрузку иконок таблиц
 	  */
+	 @Deprecated
 	 public abstract String image();
 
 	 private  ListTables(int value){

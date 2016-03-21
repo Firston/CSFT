@@ -9,6 +9,12 @@ import com.oep.utils.Validate;
 
 public class QueryUpdate implements SQL{
 
+	/**
+	 * with version 16.02.24
+	 * Введен для уменьшения количества операций при формирвоании запросов к БД
+	 */
+	private StringBuffer sb;
+	
 	@Override
 	public synchronized String getQuery(Map<String, Object> map) {
 
@@ -124,6 +130,24 @@ public class QueryUpdate implements SQL{
 		    										 "`id_service` = '" + map.get("id_service") + "' " +
 		    		   "WHERE `id` =" + map.get("id");
 		    }
+		    case CLASSSERVICES : {		    	
+		    	
+		    	return instanceQuery().append("UPDATE `classServices` SET `id_classService` = '")
+		    						  .append(map.get("id_classService"))
+		    						  .append("' WHERE `id_service` = ")
+		    						  .append(map.get("id_service"))
+		    						  .toString();		    			    	
+		    }
+		    case LISTCLASSSERVICE : {
+
+		    	return instanceQuery().append("UPDATE `listClassService` SET `className` = '")
+		    						  .append(map.get("className"))
+		    						  .append("', `description` = '")
+		    						  .append(getStringCheckNull(map.get("description")))
+		    						  .append("' WHERE `id` =")
+		    						  .append(map.get("id"))
+		    						  .toString();
+		    }
 		    default : {
 		    	return ""; 
 		    }
@@ -138,6 +162,11 @@ public class QueryUpdate implements SQL{
 	@Override
 	public String getStringCheckNull(Object value) {
 		return value != null ? value.toString() : "";
+	}
+
+	@Override
+	public StringBuffer instanceQuery() {
+		return sb = sb == null ? new StringBuffer() : sb.delete(0, sb.length());
 	}
 	
 }

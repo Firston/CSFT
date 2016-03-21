@@ -29,10 +29,9 @@ public class ProcessBackground extends Timer implements Background{
 	
 	
 	/**
-	 * Запуск процессов работающий в background
-	 * @param event - тип процесса
+	 * event - Тпп действия
+	 * objects - объекты необходимые для его выполнения
 	 */
-	@SuppressWarnings("unchecked")
 	public synchronized void run(ListBackgoundProcess event, Object...objects){
 		
 		switch(event){		
@@ -54,7 +53,7 @@ public class ProcessBackground extends Timer implements Background{
 				}
 
 				com.oep.process.data.BufferProcess.init();
-				Logger.addLog("Инициализация массива процессов");
+				Logger.addLog("Инициализация массива рабочих сессий");
 				
 				com.oep.db.sql.SQLFactory.init();
 				Logger.addLog("Инициализация построителя sql - запросов");
@@ -65,6 +64,8 @@ public class ProcessBackground extends Timer implements Background{
 			case REFRESHSESSION : {
 				/*
 				 * Время обновления списка сессий 60 секунд
+				 * 
+				 * !!!Время вынести в раздел настроек
 				 */
 				schedule(RefreshSession.getInstance().getTask(), new Date(), 60000);
 				break;

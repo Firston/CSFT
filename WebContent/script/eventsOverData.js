@@ -24,7 +24,6 @@
 				  var id_listGroupObject = document.getElementById(id)['value'];
 			      removeTRs('contentGroupObjects');
 			      execute_filter('contentGroupObjects', 'filter_id_listGroupObject:Код группы=' + id_listGroupObject);
-			      
 			      /*
 			       * ОПЕРДЕЛИТЬ НАДОБНОСТЬ
 			       */
@@ -61,6 +60,7 @@
 			    }
 			    case arg[0] == 'services' : {
 			    	document.getElementById('show_commissions').setAttribute('value', 'show_commissions_' + arg[1]);
+			    	document.getElementById('show_listClassService').setAttribute('value', 'show_listClassService_' + arg[1]);
 			    	break;
 			    }
 			    case arg[0] == 'contentSubServices' : {

@@ -33,5 +33,11 @@ public class QueryDelete implements SQL{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public StringBuffer instanceQuery() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

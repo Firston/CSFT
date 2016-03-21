@@ -11,9 +11,12 @@ var listMenu = ['dictionaries', 'services', 'access', 'tools'];
 			
 
 function slidedown(objname, id){
-        
+	
         switch(true){
         /*
+         * 
+         * В очереди на удаление
+         * 
           case id == 'idF':{
               var imgTeg = document.getElementById(id);
               imgTeg.setAttribute('src', '/CSFT/image/arrow1.png');
@@ -25,22 +28,22 @@ function slidedown(objname, id){
               imgTeg.setAttribute('src', '/CSFT/image/arrow1.png');
               imgTeg.setAttribute('onmousedown', 'slideup(\'mydiv2\',\'idT\')');     
               break;
-          }*/
+          }
+          */
           case id == 'menu_dictionaries':
           case id == 'menu_services':
           case id == 'menu_access':
           case id == 'menu_tools':{
-              var table = id.split('_')[1];
-        	  for(var i = 0, count = listMenu.length; i < count; i++){
-        		if(table != listMenu[i])
-        		  slideup('subMenu_' + listMenu[i], 'menu_' + listMenu[i]);
-        		document.getElementById(id).style.visibility = 'hidden';
-        	  }
-              document.getElementById(id).parentNode.setAttribute('onmousedown', 'slideup(\'subMenu_' + table + '\',\'menu_' + table + '\')');
-              break;
+            var table = id.split('_')[1];
+            for(var i = 0, count = listMenu.length; i < count; i++){
+        	  if(table != listMenu[i])
+        		slideup('subMenu_' + listMenu[i], 'menu_' + listMenu[i]);
+        	  document.getElementById(id).style.visibility = 'hidden';
+        	}
+            document.getElementById(id).parentNode.setAttribute('onmousedown', 'slideup(\'subMenu_' + table + '\',\'menu_' + table + '\')');
+            break;
           }
-        }
-        
+        }        
         if(moving[objname])
             return;
 
@@ -54,8 +57,11 @@ function slidedown(objname, id){
 }
 
 function slideup(objname, id){
+	
         switch(true){
         /*
+         * В очереди на удаление
+         * 
           case id == 'idF':{
               var imgTeg = document.getElementById(id);
               imgTeg.setAttribute('src', '/CSFT/image/arrow2.png');
@@ -67,7 +73,8 @@ function slideup(objname, id){
               imgTeg.setAttribute('src', '/CSFT/image/arrow2.png');
               imgTeg.setAttribute('onmousedown', 'slidedown(\'mydiv2\',\'idT\')');
               break;
-          }*/
+          }
+          */
           case id == 'menu_dictionaries':
           case id == 'menu_services':
           case id == 'menu_access':

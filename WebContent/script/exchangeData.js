@@ -315,10 +315,20 @@
 		   * не универсальная обработка!
 		   */
 		  case atrTable[0] == 'services' : {
-			    atrTable[0] = 'commissionServices';
-				subArray = new Array();
-				subArray.push('id_commission', document.getElementById('id_commission').value);
-				arrayValue.push(subArray);
+			  
+			    var el = document.getElementsByTagName('select')[0];
+			    //alert(el.id);
+			    if(el.id == 'id_commission'){
+				    atrTable[0] = 'commissionServices';
+					subArray = new Array();
+					subArray.push('id_commission', document.getElementById('id_commission').value);
+					arrayValue.push(subArray);			    	
+			    }else if(el.id == 'id_classService'){
+				    atrTable[0] = 'classServices';
+					subArray = new Array();
+					subArray.push('id_classService', document.getElementById('id_classService').value);
+					arrayValue.push(subArray);			    	
+			    }
 				subArray = new Array();
 				subArray.push('id_service', elementId);
 				arrayValue.push(subArray);
@@ -376,9 +386,8 @@
 
 		 for(var i = 0; i < arrayValue.length; i++)
 		   data +="&" + arrayValue[i][0] + "=" + arrayValue[i][1];
-
-		 req.open('GET', '/CSFT/constructor?' + data, false);
-         data = null;
+		 //alert('data : ' + data);
+		 req.open('GET', '/CSFT/constructor?' + data, false);		  
 		 req.send(null); 
 		
 	}
@@ -412,7 +421,7 @@
 		            	}
 		            }
 		        }
-		 };		 
+		 };
 		 req.open('GET', '/CSFT/constructor?' + getUrlFromMap(map), false); 
 		 req.send(null); 	
 	}

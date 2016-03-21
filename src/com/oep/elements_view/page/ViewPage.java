@@ -154,7 +154,7 @@ public class ViewPage implements Page{
 
 		attrHTML = new AttributeHTMLElement("div");
 		attrHTML.setId("f_info");
-		attrHTML.setContent("Copyright  2014-2015 © SКИУТ \r\n version " + Activity.VERSION);
+		attrHTML.setContent("Copyright  2014-2016 © SКИУТ \r\n version " + Activity.VERSION);
 		
 		attrHTML.setContent(AbstractElementHTML.createHTMLElement(attrHTML));
 		attrHTML.setId(null);

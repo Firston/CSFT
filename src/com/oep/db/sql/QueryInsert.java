@@ -10,6 +10,12 @@ import com.oep.utils.Validate;
 
 public class QueryInsert implements SQL{
 
+	/**
+	 * with version 16.02.24
+	 * Введен для уменьшения количества операций при формирвоании запросов к БД
+	 */
+	private StringBuffer sb;
+	
 	private Map<String, Object> map;
 	@Override
 	public synchronized String getQuery(Map<String, Object> map) {
@@ -138,6 +144,26 @@ public class QueryInsert implements SQL{
 		    	return "INSERT INTO `commissionServicesDefault` (`id_service`, `id_commission`) " +
 		    		   "VALUES('" + map.get("id_service") +"', '" + map.get("id_commission") + "')"; 		    	
 		    }
+		    case LISTCLASSSERVICE : {
+
+		    	return instanceQuery().append("INSERT INTO `listClassService` (`className`, `description`) VALUES('")
+		    						  .append(map.get("className"))
+		    						  .append("','")
+		    						  .append(map.get("description"))
+		    						  .append("')")
+		    						  .toString();
+		    }
+		    case CLASSSERVICES : {
+		    	
+		    	return instanceQuery().append("INSERT INTO `classServices` (`id_service`,`external_code`,`id_classService`) VALUES (")
+		    						  .append(map.get("id_service"))
+		    						  .append(", '")
+		    						  .append(getStringCheckNull(map.get("external_code")))
+		    						  .append("', ")
+		    						  .append(map.get("id_classService"))
+		    						  .append(")")
+		    						  .toString();
+		    }
 		  }
 		
 		return null;
@@ -151,5 +177,10 @@ public class QueryInsert implements SQL{
 	@Override
 	public String getStringCheckNull(Object value) {		
 		return value != null ? value.toString() : "";
+	}
+
+	@Override
+	public StringBuffer instanceQuery() {
+		return sb = sb == null ? new StringBuffer() : sb.delete(0, sb.length());
 	}
 }
